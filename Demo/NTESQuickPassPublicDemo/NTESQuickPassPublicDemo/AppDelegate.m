@@ -7,7 +7,7 @@
 //
 
 #import "AppDelegate.h"
-#import "NTESQPHomePageViewController.h"
+#import "NTESQLHomePageViewController.h"
 
 @interface AppDelegate ()
 
@@ -18,12 +18,12 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
-    [NSThread sleepForTimeInterval:1.0];
+//    [NSThread sleepForTimeInterval:1.0];
     
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     self.window.backgroundColor = [UIColor whiteColor];
     
-    NTESQPHomePageViewController *vc = [[NTESQPHomePageViewController alloc] init];
+    NTESQLHomePageViewController *vc = [[NTESQLHomePageViewController alloc] init];
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
     self.window.rootViewController = nav;
     [self.window makeKeyWindow];
