@@ -40,7 +40,7 @@
 
 * 4、使用易盾提供的businessID进行初始化业务，回调中返回初始化结果，如下：
 
-		[self.manager registerWithBusinessID:@"yourBusinessID" timeout:3*1000 urlPrefix:nil completion:^(NSDictionary * _Nullable params, BOOL success) {
+		[self.manager registerWithBusinessID:@"yourBusinessID" timeout:3*1000 urlPrefix:nil extData:nil completion:^(NSDictionary * _Nullable params, BOOL success) {
             if (success) {
                 // 初始化成功，获取token
             } else {
@@ -147,10 +147,11 @@
 		 *  @param      businessID          易盾分配的业务方ID
 		 *  @param      timeout             初始化接口超时时间，单位ms，不传或传0默认3000ms，最大不超过10000ms
 		 *  @param      urlPrefix           preCheck接口的私有化域名，若传nil或@""，默认使用@"https://ye.dun.163yun.com"
+		 *  @param      extData             当设置URLPrefix时，可以增加额外参数，接入方自行处理
 		 *  @param      initHandler         返回初始化结果
 		 *
 		 */
-		- (void)registerWithBusinessID:(NSString *)businessID timeout:(NSTimeInterval)timeout urlPrefix:(NSString * _Nullable)urlPrefix completion:(NTESQLInitHandler)initHandler;
+		- (void)registerWithBusinessID:(NSString *)businessID timeout:(NSTimeInterval)timeout urlPrefix:(NSString * _Nullable)urlPrefix extData:(id _Nullable)extData completion:(NTESQLInitHandler)initHandler;
 -
 		
 		/**
