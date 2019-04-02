@@ -113,6 +113,20 @@
  		*
  		*/
 		- (void)verifyPhoneNumber:(NSString *)phoneNumber businessID:(NSString *)businessID completion:(NTESQPCompletionHandler)completionHandler;
+		- 
+* 6、支持precheck配置URL与额外参数extData，获取accessToken
+
+		/**
+		 *  @abstract   配置参数
+		 *
+		 *  @param      phoneNumber         用户输入的手机号
+		 *  @param      businessID          易盾分配的业务方ID
+		 *  @param      configURL           preCheck接口的私有化url，若传nil或@""，默认使用@"https://ye.dun.163yun.com/v1/preCheck"
+		 *  @param      extData             当设置configURL时，可以增加额外参数，接入方自行处理
+		 *  @param      completionHandler   返回验证结果，做下一步处理
+		 *
+		 */
+		- (void)verifyPhoneNumber:(NSString *)phoneNumber businessID:(NSString *)businessID configURL:(NSString * _Nullable)configURL extData:(NSString *  _Nullable)extData completion:(NTESQPCompletionHandler _Nullable)completionHandler;
 
 		
 __注__：因出于安全考虑，为了防止本机校验接口被恶意用户刷量造成经济损失，本机校验让接入者通过自己的服务端去调用易盾check接口，通知接入者本机校验是否通过。详细介绍请开发者参考易盾本机校验服务端接口文档。		

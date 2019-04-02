@@ -48,7 +48,7 @@
 - (void)registerQuickLogin {
     BOOL shouldQL = [[NTESQuickLoginManager sharedInstance] shouldQuickLogin];
     if (shouldQL) {
-        [[NTESQuickLoginManager sharedInstance] registerWithBusinessID:QL_BUSINESSID timeout:3*1000 urlPrefix:nil extData:nil completion:^(NSDictionary * _Nullable params, BOOL success) {
+        [[NTESQuickLoginManager sharedInstance] registerWithBusinessID:QL_BUSINESSID timeout:3*1000 configURL:nil extData:nil completion:^(NSDictionary * _Nullable params, BOOL success) {
             if (success) {
                 self.token = [params objectForKey:@"token"];
             } else {

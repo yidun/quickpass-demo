@@ -66,11 +66,12 @@ typedef void(^NTESQPCompletionHandler)(NSDictionary * _Nullable params, NTESQPSt
  *
  *  @param      phoneNumber         用户输入的手机号
  *  @param      businessID          易盾分配的业务方ID
- *  @param      urlPrefix           preCheck接口的私有化域名，若传nil或@""，默认使用@"https://ye.dun.163yun.com"
+ *  @param      configURL           preCheck接口的私有化url，若传nil或@""，默认使用@"https://ye.dun.163yun.com/v1/preCheck"
+ *  @param      extData             当设置configURL时，可以增加额外参数，接入方自行处理
  *  @param      completionHandler   返回验证结果，做下一步处理
  *
  */
-- (void)verifyPhoneNumber:(NSString *)phoneNumber businessID:(NSString *)businessID urlPrefix:(NSString * _Nullable)urlPrefix completion:(NTESQPCompletionHandler _Nullable)completionHandler;
+- (void)verifyPhoneNumber:(NSString *)phoneNumber businessID:(NSString *)businessID configURL:(NSString * _Nullable)configURL extData:(NSString *  _Nullable)extData completion:(NTESQPCompletionHandler _Nullable)completionHandler;
 
 /**
  获取当前SDK版本号

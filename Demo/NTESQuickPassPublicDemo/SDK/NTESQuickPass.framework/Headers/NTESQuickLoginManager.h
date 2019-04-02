@@ -71,12 +71,12 @@ typedef void(^NTESQLAuthorizeHandler)(BOOL success, NSDictionary * _Nullable par
  *
  *  @param      businessID          易盾分配的业务方ID
  *  @param      timeout             初始化接口超时时间，单位ms，不传或传0默认3000ms，最大不超过10000ms
- *  @param      urlPrefix           preCheck接口的私有化域名，若传nil或@""，默认使用@"https://ye.dun.163yun.com"
- *  @param      extData             当设置URLPrefix时，可以增加额外参数，接入方自行处理
+ *  @param      configURL           preCheck接口的私有化url，若传nil或@""，默认使用@"https://ye.dun.163yun.com/v1/oneclick/preCheck"
+ *  @param      extData             当设置configURL时，可以增加额外参数，接入方自行处理
  *  @param      initHandler         返回初始化结果
  *
  */
-- (void)registerWithBusinessID:(NSString *)businessID timeout:(NSTimeInterval)timeout urlPrefix:(NSString * _Nullable)urlPrefix extData:(id _Nullable)extData completion:(NTESQLInitHandler)initHandler;
+- (void)registerWithBusinessID:(NSString *)businessID timeout:(NSTimeInterval)timeout configURL:(NSString * _Nullable)configURL extData:(NSString *  _Nullable)extData completion:(NTESQLInitHandler)initHandler;
 
 /**
  *  @abstract   配置参数，请确保在初始化成功后再调用预取号接口
