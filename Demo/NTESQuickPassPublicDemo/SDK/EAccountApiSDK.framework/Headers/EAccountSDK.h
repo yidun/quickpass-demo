@@ -6,6 +6,10 @@
 //  Copyright © 2018年 21CN. All rights reserved.
 //
 
+/**
+ V 1.5.1 修复已知的bug
+ */
+
 #import <Foundation/Foundation.h>
 
 /**
@@ -20,8 +24,6 @@ typedef   void (^successHandler) ( NSDictionary * _Nonnull resultDic);
  */
 typedef   void (^failureHandler) (NSError * _Nonnull error);
 
-NS_ASSUME_NONNULL_BEGIN
-
 @interface EAccountSDK : NSObject
 
 /**
@@ -29,36 +31,52 @@ NS_ASSUME_NONNULL_BEGIN
  @param appKey 接入方在账号平台领取的appKey
  @param appSecrect 接入方在账号平台领取的appSecrect
  */
-+ (void)initWithSelfKey:(NSString *)appKey
-              appSecret:(NSString *)appSecrect;
++ (void)initWithSelfKey:(NSString * _Nonnull)appKey
+              appSecret:(NSString * _Nonnull)appSecrect;
 
 
 /**
- 默认为正式环境的bundleID,需要使用测试环境的bundleID（企业证书重签名），请添加这个方法，在发布APP的时候请确保没有使用该方法。
+ 初始化SDK,之后使用。默认为正式环境的bundleID,需要使用测试环境的bundleId（通常是企业证书重签名改变的bundleId），请添加这个方法，在发布APP的时候请确保没有使用该方法。
  */
 
 +(void)setTestBundleId;
 
 /**
+ *@description 预登录接口
+ @param apiTimeoutInterval 接口超时时间，传0或者小于0的数，则默认为3s
+ */
+
++ (void)requestPreLogin:(NSTimeInterval)apiTimeoutInterval
+             completion:(nonnull successHandler)completion
+                failure:(nonnull failureHandler)fail;
+
+/**
+ *@description 登录接口
+ *@param accessCode 预取号获取d的accessCode
+ */
++ (void)requestLogin:(NSString * _Nonnull)accessCode
+ withTimeoutInterval:(NSTimeInterval)apiTimeoutInterval
+          completion:(nonnull successHandler)completion
+             failure:(nonnull failureHandler)fail;
+
+
+/**
  *@description 预取号
-  @param apiTimeoutInterval 接口超时时间，传0或者小于0的数，则默认为3s
-*/
+ @param apiTimeoutInterval 接口超时时间，传0或者小于0的数，则默认为3s
+ */
 
 + (void)getMobileCodeWithTimeout:(NSTimeInterval)apiTimeoutInterval
-           completion:(nonnull successHandler)completion
-              failure:(nonnull failureHandler)fail;
-
+                      completion:(nonnull successHandler)completion
+                         failure:(nonnull failureHandler)fail  DEPRECATED_MSG_ATTRIBUTE("Method deprecated. Use `requestPreLogin:completion:failure:`");
 
 /**
  *@description 网络认证
  *@param accessCode 预取号获取d的accessCode
  */
-+ (void)gatewayAuthWithAccessCode:(NSString*)accessCode
-                  withTimeoutInterval:(NSTimeInterval)apiTimeoutInterval
-           completion:(nonnull successHandler)completion
-              failure:(nonnull failureHandler)fail;
++ (void)gatewayAuthWithAccessCode:(NSString * _Nonnull)accessCode
+              withTimeoutInterval:(NSTimeInterval)apiTimeoutInterval
+                       completion:(nonnull successHandler)completion
+                          failure:(nonnull failureHandler)fail DEPRECATED_MSG_ATTRIBUTE("Method deprecated. Use `requestLogin:completion:failure:`");
 
 
 @end
-
-NS_ASSUME_NONNULL_END
