@@ -19,16 +19,16 @@ typedef void(^NTESQLInitHandler)(NSDictionary * _Nullable params, BOOL success);
 /**
  *  @abstract   block
  *
- *  @说明        运营商预取号结果的回调，返回预取号是否成功、脱敏手机号
+ *  @说明        运营商预取号结果的回调，包含预取号是否成功、脱敏手机号、运营商结果码（请参照运营商文档中提供的错误码信息）和描述信息
  */
-typedef void(^NTESQLGetPhoneNumHandler)(BOOL success, NSString * _Nullable securityPhone);
+typedef void(^NTESQLGetPhoneNumHandler)(NSDictionary *resultDic);
 
 /**
  *  @abstract   block
  *
- *  @说明        运营商登录认证的回调，返回认证是否成功、accessToken信息
+ *  @说明        运营商登录认证的回调，包含认证是否成功、accessToken、运营商结果码（请参照运营商文档中提供的错误码信息）和描述信息
  */
-typedef void(^NTESQLAuthorizeHandler)(BOOL success, NSDictionary * _Nullable params);
+typedef void(^NTESQLAuthorizeHandler)(NSDictionary *resultDic);
 
 @interface NTESQuickLoginManager : NSObject
 
@@ -87,7 +87,7 @@ typedef void(^NTESQLAuthorizeHandler)(BOOL success, NSDictionary * _Nullable par
 - (void)getPhoneNumberCompletion:(NTESQLGetPhoneNumHandler)phoneNumberHandler;
 
 /**
- *  @abstract   授权登录（取号接口），注意：此方法不要嵌套在getPhoneNumberCompletion的回调使用
+ *  @abstract   授权登录（取号接口），⚠️注意：此方法不要嵌套在getPhoneNumberCompletion的回调使用
  *
  *  @param      authorizeHandler    登录授权结果回调
  */

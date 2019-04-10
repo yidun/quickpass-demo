@@ -49,7 +49,9 @@
         }];
 * 5、进行一键登录前，需要提前调用预取号接口，获取用户脱敏手机号，如下：
 
-		 [self.manager getPhoneNumberCompletion:^(BOOL success, NSString * _Nullable securityPhone) {
+		 [[NTESQuickLoginManager sharedInstance] getPhoneNumberCompletion:^(NSDictionary * _Nonnull resultDic) {
+		 	NSNumber *boolNum = [resultDic objectForKey:@"success"];
+            BOOL success = [boolNum boolValue];
             if (success) {
             	// 成功获取脱敏手机号
             } else {
@@ -59,7 +61,9 @@
 	    
 * 6、登录认证接口（登录界面必须遵守移动、电信认证授权页面设计规范），调用方式如下：
 
-		[self.manager authorizeLoginCompletion:^(BOOL success, NSDictionary * _Nullable params) {
+		[[NTESQuickLoginManager sharedInstance] authorizeLoginCompletion:^(NSDictionary * _Nonnull resultDic) {
+			NSNumber *boolNum = [resultDic objectForKey:@"success"];
+            BOOL success = [boolNum boolValue];
 	        if (success) {
 	            // 取号成功，获取acessToken
 	        } else {
@@ -85,17 +89,17 @@
 		/**
 		 *  @abstract   block
 		 *
-		 *  @说明        运营商预取号结果的回调，返回预取号是否成功、脱敏手机号
+		 *  @说明        运营商预取号结果的回调，包含预取号是否成功、脱敏手机号、运营商结果码（请参照运营商文档中提供的错误码信息）和描述信息
 		 */
-		typedef void(^NTESQLGetPhoneNumHandler)(BOOL success, NSString * _Nullable securityPhone);
+		typedef void(^NTESQLGetPhoneNumHandler)(NSDictionary *resultDic);
 -		
 		
 		/**
 		 *  @abstract   block
 		 *
-		 *  @说明        运营商登录认证的回调，返回认证是否成功、accessToken信息
+		 *  @说明        运营商登录认证的回调，包含认证是否成功、accessToken、运营商结果码（请参照运营商文档中提供的错误码信息）和描述信息
 		 */
-		typedef void(^NTESQLAuthorizeHandler)(BOOL success, NSDictionary * _Nullable params);
+		typedef void(^NTESQLAuthorizeHandler)(NSDictionary *resultDic);
 		
 * 2、参数
 		
@@ -164,7 +168,7 @@
 -
 		
 		/**
-		 *  @abstract   授权登录（取号接口），注意：此方法不要嵌套在getPhoneNumberCompletion的回调使用
+		 *  @abstract   授权登录（取号接口），⚠️注意：此方法不要嵌套在getPhoneNumberCompletion的回调使用
 		 *
 		 *  @param      authorizeHandler    登录授权结果回调
 		 */

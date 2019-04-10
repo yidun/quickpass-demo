@@ -190,12 +190,15 @@
         [self updateView];
         return;
     }
-    [[NTESQuickLoginManager sharedInstance] getPhoneNumberCompletion:^(BOOL success, NSString * _Nullable securityPhone) {
+    [[NTESQuickLoginManager sharedInstance] getPhoneNumberCompletion:^(NSDictionary * _Nonnull resultDic) {
         dispatch_async(dispatch_get_main_queue(), ^{
+            NSNumber *boolNum = [resultDic objectForKey:@"success"];
+            BOOL success = [boolNum boolValue];
             if (success) {
-                self.phoneLabel.text = securityPhone;
+                self.phoneLabel.text = [resultDic objectForKey:@"securityPhone"];
+                [self showToastWithMsg:[NSString stringWithFormat:@"code:%@\ndesc:%@",  [resultDic objectForKey:@"resultCode"], [resultDic objectForKey:@"desc"]]];
             } else {
-                [self showToastWithMsg:@"预取号失败"];
+                [self showToastWithMsg:[NSString stringWithFormat:@"code:%@\ndesc:%@",  [resultDic objectForKey:@"resultCode"], [resultDic objectForKey:@"desc"]]];
                 [self updateView];
             }
         });
@@ -209,17 +212,17 @@
         return;
     }
     [NTESQPVerifyingPopView showVerifyingFromView:self.view title:verifyingQLText];
-    [[NTESQuickLoginManager sharedInstance] authorizeLoginCompletion:^(BOOL success, NSDictionary * _Nullable params) {
+    [[NTESQuickLoginManager sharedInstance] authorizeLoginCompletion:^(NSDictionary * _Nonnull resultDic) {
         dispatch_async(dispatch_get_main_queue(), ^{
-//            [NTESQPVerifyingPopView hideVerifyingView];
-//            [self showToastWithMsg:@"取号失败"];
-//            [self updateView];
+            NSNumber *boolNum = [resultDic objectForKey:@"success"];
+            BOOL success = [boolNum boolValue];
             if (success) {
-                self.accessToken = [params objectForKey:@"accessToken"];
+                self.accessToken = [resultDic objectForKey:@"accessToken"];
+                [self showToastWithMsg:[NSString stringWithFormat:@"code:%@\ndesc:%@",  [resultDic objectForKey:@"resultCode"], [resultDic objectForKey:@"desc"]]];
                 [self startCheckAuthorize];
             } else {
                 [NTESQPVerifyingPopView hideVerifyingView];
-                [self showToastWithMsg:@"取号失败"];
+                [self showToastWithMsg:[NSString stringWithFormat:@"code:%@\ndesc:%@",  [resultDic objectForKey:@"resultCode"], [resultDic objectForKey:@"desc"]]];
                 [self updateView];
             }
         });

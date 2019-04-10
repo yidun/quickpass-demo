@@ -11,31 +11,43 @@
 
 #import <Foundation/Foundation.h>
 
-typedef NS_ENUM(NSInteger, UASDKErrorCode) {
-    
-    // 客户端返回码
-    UASDKErrorCodeSuccess                              = 103000,
-    //无网络（4G网络下，App未被允许访问蜂窝网）
-    UASDKErrorCodeNoNetwork                            = 200022,
-    //请求超时
-    UASDKErrorCodeRequestTimeout                       = 200023,
-    //未知错误，一般配合描述分析
-    UASDKErrorCodeUnknownError                         = 200025,
-    //蜂窝未开启（纯WiFi状态下返回该错误码）
-    UASDKErrorCodeNonCellularNetwork                   = 200027,
-    //重定向失败
-    UASDKErrorCodeWAPRedirectFailed                    = 200038,
-    //手机没有SIM卡
-    UASDKErrorCodePhoneWithoutSIM                      = 200048,
-    //Socket创建失败或发送接收数据错误
-    UASDKErrorCodeSocketError                          = 200050,
-    //异常数据
-    UASDKErrorCodeExceptionData                        = 200064,
-    //CA根证书认证失败
-    UASDKErrorCodeCAAuthFailed                         = 200072,
-    //本机号码校验仅支持移动号码
-    UASDKErrorCodeMobileAuthCMCCOnly                   = 200080,
-    
-};
+typedef NSString *UASDKErrorCode;
+
+//成功
+static UASDKErrorCode const UASDKErrorCodeSuccess = @"103000";
+//数据解析异常
+static UASDKErrorCode const UASDKErrorCodeProcessException = @"200021";
+//无网络
+static UASDKErrorCode const UASDKErrorCodeNoNetwork = @"200022";
+//请求超时
+static UASDKErrorCode const UASDKErrorCodeRequestTimeout = @"200023";
+//未知错误
+static UASDKErrorCode const UASDKErrorCodeUnknownError = @"200025";
+//蜂窝未开启或不稳定
+static UASDKErrorCode const UASDKErrorCodeNonCellularNetwork = @"200027";
+//网络请求出错(HTTP Code 非200)
+static UASDKErrorCode const UASDKErrorCodeRequestError = @"200028";
+//非移动网关重定向失败
+static UASDKErrorCode const UASDKErrorCodeWAPRedirectFailed = @"200038";
+//无SIM卡
+static UASDKErrorCode const UASDKErrorCodePhoneWithoutSIM = @"200048";
+//Socket创建或发送接收数据失败
+static UASDKErrorCode const UASDKErrorCodeSocketError = @"200050";
+//服务端返回数据异常
+static UASDKErrorCode const UASDKErrorCodeExceptionData = @"200064";
+//CA根证书校验失败
+static UASDKErrorCode const UASDKErrorCodeCAAuthFailed = @"200072";
+//服务器繁忙
+static UASDKErrorCode const UASDKErrorCodeServerBusy = @"200082";
+
+
+
+/**
+ 获取错误码描述
+
+ @param code 错误码
+ @return 返回对应描述
+ */
+FOUNDATION_EXPORT NSString *UASDKErrorDescription(UASDKErrorCode code);
 
 #endif /* UASDKErrorCode_h */

@@ -6,15 +6,18 @@
 //  Copyright © 2018 com.CMCC.iOS. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
-#define UASDKVERSION @"quick_login_iOS_9.0.11"
+#define UASDKVERSION @"quick_login_iOS_9.0.13"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class UAAuthViewController;
-
 @interface UASDKLogin : NSObject
+
+/**
+ SDK登录单例管理
+ */
+@property (nonatomic,class,readonly) UASDKLogin *shareLogin;
 
 /**
  网络类型及运营商（双卡下，获取上网卡的运营商）
@@ -26,48 +29,41 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic,readonly) NSDictionary<NSString *, NSNumber *> *networkType;
 
 /**
- SDK登录单例管理
- */
-@property (nonatomic,class,readonly) UASDKLogin *shareLogin;
-
-/**
- 登录超时设置
- 
- @param timeoutInterval 单位ms（默认8000毫秒）
- */
-- (void)setTimeoutInterval:(NSTimeInterval)timeoutInterval;
-
-/**
  初始化SDK参数
- 
+
  @param appId 申请能力平台成功后，分配的appId
  @param appKey 申请能力平台成功后，分配的appKey
+ @param encrypType 缺省参数，开发者统一填写nil
  */
-- (void)registerAppId:(NSString *)appId AppKey:(NSString *)appKey;
+- (void)registerAppId:(NSString *)appId appKey:(NSString *)appKey encrypType:(NSString *_Nullable)encrypType;
 
 /**
- 取号，可以先于授权登录getAuthorizationWithAuthViewController调用，目的是减少网关取号带来的成功率低的问题
- 
- 注：此方法的回调不要嵌套getAuthorizationWithAuthViewController使用
- 
- @param completion 回调
+ 设置超时
+
+ @param timeout 超时
  */
-- (void)getPhoneNumberCompletion:(void (^)(NSDictionary * sender))completion;
+- (void)setTimeoutInterval:(NSTimeInterval)timeout;
 
 /**
- 一键登录，获取到的token，可传给移动认证服务端获取完整手机号
- 
+ 取号
+
  @param completion 回调
  */
-- (void)getAuthorizationCompletion:(void (^)(NSDictionary *sender))completion;
-
+- (void)getPhoneNumberCompletion:(void(^)(NSDictionary *_Nonnull result))completion;
 
 /**
- 本机号码校验，获取到的token，要结合用户输入的手机号码传给移动认证服务端
- 
+ 获取授权登录token
+
  @param completion 回调
  */
-- (void)mobileAuthCompletion:(void (^)(NSDictionary *sender))completion;
+- (void)getAuthorizationCompletion:(void(^)(NSDictionary *_Nonnull result))completion;
+
+/**
+ 获取本机号码校验token
+
+ @param completion 回调
+ */
+- (void)mobileAuthCompletion:(void(^)(NSDictionary *_Nonnull result))completion;
 
 /**
  删除取号缓存数据
