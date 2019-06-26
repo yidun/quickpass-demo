@@ -47,7 +47,7 @@
 
 		[self.manager registerWithBusinessID:@"yourBusinessID" timeout:3*1000 configURL:nil extData:nil completion:^(NSDictionary * _Nullable params, BOOL success) {
             if (success) {
-                // 初始化成功，获取token
+             	// 初始化成功，获取token
             } else {
             	// 初始化失败
             }
@@ -73,7 +73,7 @@
 				NSNumber *boolNum = [resultDic objectForKey:@"success"];
 	            BOOL success = [boolNum boolValue];
 		        if (success) {
-		            // 取号成功，获取acessToken
+		         	// 取号成功，获取acessToken
 		        } else {
 					// 取号失败
 		        }
@@ -86,7 +86,7 @@
 		        if (success) {
 					// 取号成功，获取acessToken
 		        } else {
-		          // 取号失败
+		      		// 取号失败
 		        }
 	    	}];
     
