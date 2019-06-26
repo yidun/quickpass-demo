@@ -7,7 +7,7 @@
 //
 
 #import "NTESQPLoginSuccessViewController.h"
-#import "Masonry.h"
+#import <Masonry.h>
 #import "NTESQPDemoDefines.h"
 #import "NTESQPHomePageViewController.h"
 #import "NTESQLHomePageViewController.h"

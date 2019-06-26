@@ -7,7 +7,7 @@
 //
 
 #import "NTESQPLoginViewController.h"
-#import "Masonry.h"
+#import <Masonry.h>
 #import "NTESQPDemoDefines.h"
 #import "NTESQPLoginSuccessViewController.h"
 #import "NTESQPVerifyingPopView.h"
@@ -188,7 +188,7 @@
                 [self updateView];
                 [self startTime:self.timeButton];
             } else {
-                [self showToastWithMsg:@"token错误"];
+                [self showToastWithMsg:[NSString stringWithFormat:@"错误：%@", code]];
             }
         }
     } else {

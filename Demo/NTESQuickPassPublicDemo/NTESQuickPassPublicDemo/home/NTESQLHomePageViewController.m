@@ -7,11 +7,13 @@
 //
 
 #import "NTESQLHomePageViewController.h"
-#import "Masonry.h"
+#import <Masonry.h>
 #import "NTESQPDemoDefines.h"
 #import "NTESQLLoginViewController.h"
 #import "NTESQPHomePageViewController.h"
 #import <NTESQuickPass/NTESQuickPass.h>
+#import "NTESQPLoginSuccessViewController.h"
+#import "NTESDemoHttpRequest.h"
 
 @interface  NTESQLHomePageViewController() <UINavigationBarDelegate>
 
@@ -26,6 +28,8 @@
 @property (copy, nonatomic) NSString *token;
 
 @property (copy, nonatomic) NSString *accessToken;
+
+@property (nonatomic, strong) NTESQLLoginViewController *loginViewController;
 
 @end
 
@@ -56,6 +60,109 @@
             }
         }];
     }
+}
+
+- (void)doRegister
+{
+    [self getPhoneNumberWithText:registerTitle];
+}
+
+- (void)doLogin
+{
+    [self getPhoneNumberWithText:loginTitle];
+}
+
+- (void)getPhoneNumberWithText:(NSString *)title
+{
+    self.loginViewController = [[NTESQLLoginViewController alloc] init];
+    self.loginViewController.themeTitle = title;
+    self.loginViewController.token = self.token;
+    
+    NTESQuickLoginManager *loginManager = [NTESQuickLoginManager sharedInstance];
+    if ([loginManager getCarrier] == 3 || [loginManager getCarrier] == 2) {
+        [loginManager getPhoneNumberCompletion:^(NSDictionary * _Nonnull resultDic) {
+            NSNumber *boolNum = [resultDic objectForKey:@"success"];
+            BOOL success = [boolNum boolValue];
+            if (success) {
+                [self authorizeCMCULoginWithText:title];
+            } else {
+                [self dismissViewControllerAnimated:YES completion:nil];
+                [self.navigationController pushViewController:self.loginViewController animated:YES];
+                [self.loginViewController updateView];
+                [self.loginViewController showToastWithMsg:[NSString stringWithFormat:@"code:%@\ndesc:%@",  [resultDic objectForKey:@"resultCode"], [resultDic objectForKey:@"desc"]]];
+            }
+        }];
+    } else {
+        [self.navigationController pushViewController:self.loginViewController animated:YES];
+        [self.loginViewController getPhoneNumber];
+    }
+}
+
+- (void)authorizeCMCULoginWithText:(NSString *)title
+{
+    [[NTESQuickLoginManager sharedInstance] authorizeLoginViewController:self result:^(NSDictionary * _Nonnull resultDic) {
+        NSNumber *boolNum = [resultDic objectForKey:@"success"];
+        BOOL success = [boolNum boolValue];
+        if (success) {
+            self.accessToken = [resultDic objectForKey:@"accessToken"];
+            [self startCheckWithText:title];
+        } else {
+            [self dismissViewControllerAnimated:YES completion:nil];
+            [self.navigationController pushViewController:self.loginViewController animated:YES];
+            [self.loginViewController updateView];
+            [self.loginViewController showToastWithMsg:[NSString stringWithFormat:@"code:%@\ndesc:%@",  [resultDic objectForKey:@"resultCode"], [resultDic objectForKey:@"desc"]]];
+        }
+    }];
+}
+
+- (void)startCheckWithText:(NSString *)title
+{
+    NSDictionary *dict = @{
+                           @"accessToken":self.accessToken?:@"",
+                           @"token":self.token?:@"",
+                           };
+    NSError *error;
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dict
+                                                       options:NSJSONWritingPrettyPrinted
+                                                         error:&error];
+    if (error) {
+        return;
+    }
+    
+    [NTESDemoHttpRequest startRequestWithURL:API_LOGIN_TOKEN_QLCHECK httpMethod:@"POST" requestData:jsonData finishBlock:^(NSData *data, NSError *error, NSInteger statusCode) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self dismissViewControllerAnimated:YES completion:nil];
+            if (data) {
+                NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
+                NSNumber *code = [dict objectForKey:@"code"];
+                if ([code integerValue] == 200) {
+                    NSDictionary *data = [dict objectForKey:@"data"];
+                    NSString *phoneNum = [data objectForKey:@"phone"];
+                    if (phoneNum && phoneNum.length > 0) {
+                        NTESQPLoginSuccessViewController *vc = [[NTESQPLoginSuccessViewController alloc] init];
+                        vc.themeTitle = title;
+                        vc.type = NTESQuickLoginType;
+                        [self.navigationController pushViewController:vc animated:YES];
+                    } else {
+                        [self.navigationController pushViewController:self.loginViewController animated:YES];
+                        [self.loginViewController updateView];
+                        [self.loginViewController showToastWithMsg:@"一键登录失败"];
+                    }
+                } else if ([code integerValue] == 1003){
+                    [self.navigationController pushViewController:self.loginViewController animated:YES];
+                    [self.loginViewController updateView];
+                } else {
+                    [self.navigationController pushViewController:self.loginViewController animated:YES];
+                    [self.loginViewController updateView];
+                    [self.loginViewController showToastWithMsg:[NSString stringWithFormat:@"错误，code=%@", code]];
+                }
+            } else {
+                [self.navigationController pushViewController:self.loginViewController animated:YES];
+                [self.loginViewController updateView];
+                [self.loginViewController showToastWithMsg:[NSString stringWithFormat:@"服务器错误-%ld", (long)statusCode]];
+            }
+        });
+    }];
 }
 
 - (void)customInitSubViews
@@ -204,22 +311,6 @@
         make.centerX.equalTo(self.view);
         make.bottom.equalTo(self.view.mas_bottom).offset(bottomWhiteHeight);
     }];
-}
-
-- (void)doRegister
-{
-    NTESQLLoginViewController *vc = [[NTESQLLoginViewController alloc] init];
-    vc.themeTitle = registerTitle;
-    vc.token = self.token;
-    [self.navigationController pushViewController:vc animated:YES];
-}
-
-- (void)doLogin
-{
-    NTESQLLoginViewController *vc = [[NTESQLLoginViewController alloc] init];
-    vc.themeTitle = loginTitle;
-    vc.token = self.token;
-    [self.navigationController pushViewController:vc animated:YES];
 }
 
 - (void)doExchange

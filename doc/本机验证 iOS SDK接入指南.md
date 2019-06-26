@@ -6,15 +6,20 @@
 * 2、添加依赖库，在项目设置target -> 选项卡General ->Linked Frameworks and Libraries添加如下依赖库： 
 	* `TYRZSDK.framework`
 	* `EAccountApiSDK.framework`
+	* `OAuth.framework`
 	* `libz.1.2.8.tbd`
 	* `libc++.1.tbd`
-* 3、在Xcode中找到`TARGETS-->Build Setting-->Linking-->Other Linker Flags`在这个选项中需要添加 `-ObjC`
+	*	如需支持iOS8.0系统，需添加`CoreFoundation.framework`，并将`CoreFoundation.framework`的status改为optional
+* 3、在项目设置target -> 选项卡Build Phase -> Copy Bundle Resources添加依赖bundle：
+	* `sdk_oauth.bundle`
+	* `TYRZResource.bundle`
+* 4、在Xcode中找到`TARGETS-->Build Setting-->Linking-->Other Linker Flags`在这个选项中需要添加 `-ObjC`
     
    __备注:__  
    
    (1)如果已存在上述的系统framework，则忽略
    
-   (2)SDK 最低兼容系统版本 iOS 9.0
+   (2)SDK 最低兼容系统版本 iOS 8.0
   
 ### 二、SDK 使用
 
@@ -114,7 +119,7 @@
  		*/
 		- (void)verifyPhoneNumber:(NSString *)phoneNumber businessID:(NSString *)businessID completion:(NTESQPCompletionHandler)completionHandler;
 		- 
-* 6、支持precheck配置URL与额外参数extData，获取accessToken
+* 6、precheck支持业务方定制配置URL与额外参数extData，获取accessToken
 
 		/**
 		 *  @abstract   配置参数
@@ -128,6 +133,13 @@
 		 */
 		- (void)verifyPhoneNumber:(NSString *)phoneNumber businessID:(NSString *)businessID configURL:(NSString * _Nullable)configURL extData:(NSString *  _Nullable)extData completion:(NTESQPCompletionHandler _Nullable)completionHandler;
 
+* 7、获取SDK当前版本号
+
+		/**
+		 获取当前SDK版本号
+		 */
+		- (NSString *)getSDKVersion;
+	
 		
 __注__：因出于安全考虑，为了防止本机校验接口被恶意用户刷量造成经济损失，本机校验让接入者通过自己的服务端去调用易盾check接口，通知接入者本机校验是否通过。详细介绍请开发者参考易盾本机校验服务端接口文档。		
 

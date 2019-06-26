@@ -5,6 +5,7 @@
 
 #import "UASDKLogin.h"
 #import "UASDKErrorCode.h"
+#import "UACustomModel.h"
 
 
 

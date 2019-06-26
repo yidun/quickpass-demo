@@ -6,6 +6,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -19,7 +20,8 @@ typedef void(^NTESQLInitHandler)(NSDictionary * _Nullable params, BOOL success);
 /**
  *  @abstract   block
  *
- *  @说明        运营商预取号结果的回调，包含预取号是否成功、脱敏手机号、运营商结果码（请参照运营商文档中提供的错误码信息）和描述信息
+ *  @说明        运营商预取号结果的回调，包含预取号是否成功、脱敏手机号（仅电信返回脱敏手机号）、运营商结果码（请参照运营商文档中提供的错误码信息）和描述信息
+ *              ⚠️ 联通预取号无法获取脱敏手机号，需调用pushAuthorizePage拉起授权页面显示
  */
 typedef void(^NTESQLGetPhoneNumHandler)(NSDictionary *resultDic);
 
@@ -52,12 +54,12 @@ typedef void(^NTESQLAuthorizeHandler)(NSDictionary *resultDic);
 - (BOOL)shouldQuickLogin;
 
 /**
- *  @abstract   获取当前上网卡的运营商，1:电信 2.移动 3.联通
+ *  @abstract   获取当前上网卡的运营商，0:未知 1:电信 2.移动 3.联通
  */
 - (NSInteger)getCarrier;
 
 /**
- *  @abstract   配置参数
+ *  @abstract   初始化配置参数
  *
  *  @param      businessID          易盾分配的业务方ID
  *  @param      timeout             初始化接口超时时间，单位ms，不传或传0默认3000ms，最大不超过10000ms
@@ -67,7 +69,7 @@ typedef void(^NTESQLAuthorizeHandler)(NSDictionary *resultDic);
 - (void)registerWithBusinessID:(NSString *)businessID timeout:(NSTimeInterval)timeout completion:(NTESQLInitHandler)initHandler;
 
 /**
- *  @abstract   配置参数
+ *  @abstract   初始化配置参数
  *
  *  @param      businessID          易盾分配的业务方ID
  *  @param      timeout             初始化接口超时时间，单位ms，不传或传0默认3000ms，最大不超过10000ms
@@ -79,7 +81,7 @@ typedef void(^NTESQLAuthorizeHandler)(NSDictionary *resultDic);
 - (void)registerWithBusinessID:(NSString *)businessID timeout:(NSTimeInterval)timeout configURL:(NSString * _Nullable)configURL extData:(NSString *  _Nullable)extData completion:(NTESQLInitHandler)initHandler;
 
 /**
- *  @abstract   配置参数，请确保在初始化成功后再调用预取号接口
+ *  @abstract   移动、联通、电信 - 预取号接口，请确保在初始化成功后再调用此方法
  *
  *  @param      phoneNumberHandler  返回预取号结果
  *
@@ -87,11 +89,20 @@ typedef void(^NTESQLAuthorizeHandler)(NSDictionary *resultDic);
 - (void)getPhoneNumberCompletion:(NTESQLGetPhoneNumHandler)phoneNumberHandler;
 
 /**
- *  @abstract   授权登录（取号接口），⚠️注意：此方法不要嵌套在getPhoneNumberCompletion的回调使用
+ *  @abstract   电信 - 授权登录（取号接口），⚠️注意：此方法不要嵌套在getPhoneNumberCompletion的回调使用
  *
  *  @param      authorizeHandler    登录授权结果回调
  */
 - (void)authorizeLoginCompletion:(NTESQLAuthorizeHandler)authorizeHandler;
+
+/**
+ *  @abstract   联通、移动 - 授权登录（取号接口），⚠️注意：此方法需嵌套在getPhoneNumberCompletion的回调使用
+ *
+ *  @param      viewController      将拉起移动、联通运营商授权页面的上级VC
+ *  @param      authorizeHandler    登录授权结果回调
+ */
+- (void)authorizeLoginViewController:(UIViewController *)viewController
+                              result:(NTESQLAuthorizeHandler)authorizeHandler;
 
 /**
  获取当前SDK版本号

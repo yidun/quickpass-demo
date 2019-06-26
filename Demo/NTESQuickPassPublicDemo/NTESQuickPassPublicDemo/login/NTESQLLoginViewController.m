@@ -7,7 +7,7 @@
 //
 
 #import "NTESQLLoginViewController.h"
-#import "Masonry.h"
+#import <Masonry.h>
 #import "NTESQPDemoDefines.h"
 #import <NTESQuickPass/NTESQuickPass.h>
 #import <WebKit/WebKit.h>
@@ -62,7 +62,6 @@
 {
     [super viewDidLoad];
     [self customInitSubViews];
-    [self getPhoneNumber];
 }
 
 - (void)customInitSubViews
@@ -186,17 +185,12 @@
 
 - (void)getPhoneNumber
 {
-    if ([[NTESQuickLoginManager sharedInstance] getCarrier] == 3) {
-        [self updateView];
-        return;
-    }
     [[NTESQuickLoginManager sharedInstance] getPhoneNumberCompletion:^(NSDictionary * _Nonnull resultDic) {
         dispatch_async(dispatch_get_main_queue(), ^{
             NSNumber *boolNum = [resultDic objectForKey:@"success"];
             BOOL success = [boolNum boolValue];
             if (success) {
                 self.phoneLabel.text = [resultDic objectForKey:@"securityPhone"];
-                [self showToastWithMsg:[NSString stringWithFormat:@"code:%@\ndesc:%@",  [resultDic objectForKey:@"resultCode"], [resultDic objectForKey:@"desc"]]];
             } else {
                 [self showToastWithMsg:[NSString stringWithFormat:@"code:%@\ndesc:%@",  [resultDic objectForKey:@"resultCode"], [resultDic objectForKey:@"desc"]]];
                 [self updateView];
@@ -207,10 +201,6 @@
 
 - (void)authorizeLoginButtonClick
 {
-    if ([[NTESQuickLoginManager sharedInstance] getCarrier] == 3) {
-        [self updateView];
-        return;
-    }
     [NTESQPVerifyingPopView showVerifyingFromView:self.view title:verifyingQLText];
     [[NTESQuickLoginManager sharedInstance] authorizeLoginCompletion:^(NSDictionary * _Nonnull resultDic) {
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -218,7 +208,6 @@
             BOOL success = [boolNum boolValue];
             if (success) {
                 self.accessToken = [resultDic objectForKey:@"accessToken"];
-                [self showToastWithMsg:[NSString stringWithFormat:@"code:%@\ndesc:%@",  [resultDic objectForKey:@"resultCode"], [resultDic objectForKey:@"desc"]]];
                 [self startCheckAuthorize];
             } else {
                 [NTESQPVerifyingPopView hideVerifyingView];
@@ -286,7 +275,7 @@
             } else if ([code integerValue] == 1003){
                 [self updateView];
             } else {
-                [self showToastWithMsg:[NSString stringWithFormat:@"token错误，code=%@", code]];
+                [self showToastWithMsg:[NSString stringWithFormat:@"错误，code=%@", code]];
                 [self updateView];
             }
         }

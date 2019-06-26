@@ -8,7 +8,7 @@
 
 #import "NTESQPVerifyingPopView.h"
 #import "NTESQPDemoDefines.h"
-#import "Masonry.h"
+#import <Masonry.h>
 
 static UIView *popView = nil;
 

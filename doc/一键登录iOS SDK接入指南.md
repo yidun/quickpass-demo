@@ -3,18 +3,23 @@
 ### 一、SDK集成
 ####1.搭建开发环境
 * 1、导入 `NTESQuickPass.framework` 到XCode工程，直接拖拽`NTESQuickPass.framework`文件到Xcode工程内(请勾选Copy items if needed选项)
-* 2、添加依赖库，在项目设置target -> 选项卡General ->Linked Frameworks and Libraries添加如下依赖库： 
+* 2、添加依赖库，在项目设置target -> 选项卡Build Phase -> Linked Binary with Libraries添加如下依赖库： 
 	* `TYRZSDK.framework`
 	* `EAccountApiSDK.framework`
+	* `OAuth.framework`
 	* `libz.1.2.8.tbd`
 	* `libc++.1.tbd`
-* 3、在Xcode中找到`TARGETS-->Build Setting-->Linking-->Other Linker Flags`在这个选项中需要添加 `-ObjC`
-    
+	*	如需支持iOS8.0系统，需添加`CoreFoundation.framework`，并将`CoreFoundation.framework`的status改为optional
+* 3、在项目设置target -> 选项卡Build Phase -> Copy Bundle Resources添加依赖bundle：
+	* `sdk_oauth.bundle`
+	* `TYRZResource.bundle`
+* 4、在Xcode中找到`TARGETS-->Build Setting-->Linking-->Other Linker Flags`在这个选项中需要添加 `-ObjC`
+
    __备注:__  
    
    (1)如果已存在上述的系统framework，则忽略
    
-   (2)SDK 最低兼容系统版本 iOS 9.0
+   (2)SDK 最低兼容系统版本 iOS 8.0
 
   
 ### 二、SDK 使用
@@ -47,30 +52,44 @@
             	// 初始化失败
             }
         }];
-* 5、进行一键登录前，需要提前调用预取号接口，获取用户脱敏手机号，如下：
+* 5、进行一键登录前，需要调用预取号接口，获取预取号结果，如下：
 
 		 [[NTESQuickLoginManager sharedInstance] getPhoneNumberCompletion:^(NSDictionary * _Nonnull resultDic) {
 		 	NSNumber *boolNum = [resultDic objectForKey:@"success"];
             BOOL success = [boolNum boolValue];
             if (success) {
-            	// 成功获取脱敏手机号
+            	// 电信获取脱敏手机号成功
+            	// 移动、联通无脱敏手机号，需在此回调中拉去授权登录页面
             } else {
-	         	// 获取脱敏手机号失败
+	         	// 电信获取脱敏手机号失败
+	         	// 移动、联通预取号失败
             }
 	    }];
 	    
-* 6、登录认证接口（登录界面必须遵守移动、电信认证授权页面设计规范），调用方式如下：
+* 6、授权认证接口
+	* 电信：登录界面由接入方自行设计，但必须遵守电信认证授权页面设计规范，调用方式如下：
 
-		[[NTESQuickLoginManager sharedInstance] authorizeLoginCompletion:^(NSDictionary * _Nonnull resultDic) {
-			NSNumber *boolNum = [resultDic objectForKey:@"success"];
-            BOOL success = [boolNum boolValue];
-	        if (success) {
-	            // 取号成功，获取acessToken
-	        } else {
-				// 取号失败
-	        }
-	    }];
-
+			[[NTESQuickLoginManager sharedInstance] authorizeLoginCompletion:^(NSDictionary * _Nonnull resultDic) {
+				NSNumber *boolNum = [resultDic objectForKey:@"success"];
+	            BOOL success = [boolNum boolValue];
+		        if (success) {
+		            // 取号成功，获取acessToken
+		        } else {
+					// 取号失败
+		        }
+		    }];
+	* 移动、联通:登录界面使用运营商提供的授权页面，调用方式如下：
+			
+			[[NTESQuickLoginManager sharedInstance] authorizeLoginViewController:self result:^(NSDictionary * _Nonnull resultDic) {
+		        NSNumber *boolNum = [resultDic objectForKey:@"success"];
+		        BOOL success = [boolNum boolValue];
+		        if (success) {
+					// 取号成功，获取acessToken
+		        } else {
+		          // 取号失败
+		        }
+	    	}];
+    
  __备注:__  在获取accessToken成功的回调里，结合第4步获取的token字段，做下一步check接口的验证；在获取accessToken失败的回调里做客户端的下一步处理，如短信验证。    
 
 
@@ -168,12 +187,26 @@
 -
 		
 		/**
-		 *  @abstract   授权登录（取号接口），⚠️注意：此方法不要嵌套在getPhoneNumberCompletion的回调使用
+		 *  @abstract   电信 - 授权登录（取号接口），⚠️注意：此方法不要嵌套在getPhoneNumberCompletion的回调使用
 		 *
 		 *  @param      authorizeHandler    登录授权结果回调
 		 */
 		- (void)authorizeLoginCompletion:(NTESQLAuthorizeHandler)authorizeHandler;
+-
 
+		/**
+		 *  @abstract   联通、移动 - 授权登录（取号接口），⚠️注意：此方法需嵌套在getPhoneNumberCompletion的回调使用
+		 *
+		 *  @param      viewController      将拉起移动、联通运营商授权页面的上级VC
+		 *  @param      authorizeHandler    登录授权结果回调
+		 */
+		- (void)authorizeLoginViewController:(UIViewController *)viewController
+		                              result:(NTESQLAuthorizeHandler)authorizeHandler;
+-
+		/**
+		 获取当前SDK版本号
+		 */
+		- (NSString *)getSDKVersion;	
 		
 __注__：因出于安全考虑，为了防止一键登录接口被恶意用户刷量造成经济损失，一键登录让接入者通过自己的服务端去调用易盾check接口，通知接入者一键登录是否通过。详细介绍请开发者参考易盾一键登录服务端接口文档。		
 
