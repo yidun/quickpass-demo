@@ -31,14 +31,6 @@
  *  md5加密工具
  */
 + (NSString*) encryptWithMD5:(NSString*) content;
-/**
- *  base64加密工具
- */
-+ (NSString*) encryptWithBase64:(NSString *)content;
-/**
- *  base64解密内容
- */
-+ (NSString*) decryptWithBase64:(NSString *)content;
 
 /**
  *  是否使用测试环境

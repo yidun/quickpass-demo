@@ -1,4 +1,4 @@
-一键登录 iOS SDK 接入指南
+一键登录 iOS SDK 接入指南5系
 ===
 ### 一、SDK集成
 ####1.搭建开发环境
@@ -73,7 +73,7 @@
 				NSNumber *boolNum = [resultDic objectForKey:@"success"];
 	            BOOL success = [boolNum boolValue];
 		        if (success) {
-		         	// 取号成功，获取acessToken
+		     		// 取号成功，获取acessToken
 		        } else {
 					// 取号失败
 		        }
@@ -86,10 +86,31 @@
 		        if (success) {
 					// 取号成功，获取acessToken
 		        } else {
-		      		// 取号失败
+		         	// 取号失败
 		        }
 	    	}];
-    
+* 7、移动、联通授权页面自定义接口，调用方式如下：
+ - 移动授权页面自定义
+ 
+			NTESQuickLoginCMModel *CMModel = [[NTESQuickLoginCMModel alloc] init];
+	 		
+	 		/* 在此处进行自定义，可自定义项参见NTESQuickLoginCMModel.h */
+	 		
+			[[NTESQuickLoginManager sharedInstance] setupCMModel:CMModel];
+ - 联通授权页面自定义
+ 
+	 		 NTESQuickLoginCUModel *CUModel = [[NTESQuickLoginCUModel alloc] init];
+			
+			/* 在此处进行自定义，可自定义项参见NTESQuickLoginCUModel.h */
+			
+			[[NTESQuickLoginManager sharedInstance] setupCUModel:CUModel];
+		
+ - 移动授权页面可自定义项
+ 	
+ 	<img src="https://github.com/dilemmaxk/learnIOS/raw/master/%E7%A7%BB%E5%8A%A8%E8%87%AA%E5%AE%9A%E4%B9%89%E9%A1%B9.png" width="100%" height="100%">
+ 	
+ - 联通授权页面可自定义项  
+	<img src="https://github.com/dilemmaxk/learnIOS/raw/master/%E8%81%94%E9%80%9A%E8%87%AA%E5%AE%9A%E4%B9%89%E9%A1%B9.png" width="100%" height="100%">
  __备注:__  在获取accessToken成功的回调里，结合第4步获取的token字段，做下一步check接口的验证；在获取accessToken失败的回调里做客户端的下一步处理，如短信验证。    
 
 
@@ -193,12 +214,27 @@
 		 */
 		- (void)authorizeLoginCompletion:(NTESQLAuthorizeHandler)authorizeHandler;
 -
-
 		/**
-		 *  @abstract   联通、移动 - 授权登录（取号接口），⚠️注意：此方法需嵌套在getPhoneNumberCompletion的回调使用
+		 *  @abstract   设置移动授权登录界面model，⚠️注意：此方法需嵌套在getPhoneNumberCompletion的回调中使用，且在authorizeLoginViewController:result:之前调用
+		 *
+		 *  @param      model   移动登录界面model
+		 */
+		- (void)setupCMModel:(NTESQuickLoginCMModel *)model;
+-
+		/**
+		 *  @abstract   设置联通授权登录界面model，⚠️注意：此方法需嵌套在getPhoneNumberCompletion的回调中使用，且在authorizeLoginViewController:result:之前调用
+		 *
+		 *  @param      model   联通登录界面model
+		 */
+		- (void)setupCUModel:(NTESQuickLoginCUModel *)model;
+-
+		/**
+		 *  @abstract   联通、移动 - 授权登录（取号接口），⚠️注意：此方法需嵌套在getPhoneNumberCompletion的回调中使用，且在setupCMModel:或setupCUModel:之后调用
 		 *
 		 *  @param      viewController      将拉起移动、联通运营商授权页面的上级VC
-		 *  @param      authorizeHandler    登录授权结果回调
+		 *  @param      authorizeHandler    登录授权结果回调，包含认证成功和认证失败，认证失败情况包括取号失败、用户取消登录（点按返回按钮）和切换登录方式，可根据code码做后续自定义操作
+		 *                                  取消登录:移动返回code码200020，联通返回10104
+		 *                                  切换登录方式:移动返回code码200060，联通返回10105
 		 */
 		- (void)authorizeLoginViewController:(UIViewController *)viewController
 		                              result:(NTESQLAuthorizeHandler)authorizeHandler;

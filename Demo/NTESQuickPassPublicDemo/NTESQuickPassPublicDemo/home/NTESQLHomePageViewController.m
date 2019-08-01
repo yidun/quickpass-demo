@@ -78,27 +78,40 @@
     self.loginViewController.themeTitle = title;
     self.loginViewController.token = self.token;
     
-    NTESQuickLoginManager *loginManager = [NTESQuickLoginManager sharedInstance];
-    if ([loginManager getCarrier] == 3 || [loginManager getCarrier] == 2) {
-        [loginManager getPhoneNumberCompletion:^(NSDictionary * _Nonnull resultDic) {
+    if ([[NTESQuickLoginManager sharedInstance] getCarrier] == 1) {
+        // 电信
+        [self.navigationController pushViewController:self.loginViewController animated:YES];
+        [self.loginViewController getPhoneNumber];
+    } else if ([[NTESQuickLoginManager sharedInstance] getCarrier] == 2) {
+        // 移动
+        [[NTESQuickLoginManager sharedInstance] getPhoneNumberCompletion:^(NSDictionary * _Nonnull resultDic) {
             NSNumber *boolNum = [resultDic objectForKey:@"success"];
             BOOL success = [boolNum boolValue];
             if (success) {
-                [self authorizeCMCULoginWithText:title];
+                [self setCMCustomUI];
+                [self authorizeCMLoginWithText:title];
             } else {
-                [self dismissViewControllerAnimated:YES completion:nil];
                 [self.navigationController pushViewController:self.loginViewController animated:YES];
                 [self.loginViewController updateView];
-                [self.loginViewController showToastWithMsg:[NSString stringWithFormat:@"code:%@\ndesc:%@",  [resultDic objectForKey:@"resultCode"], [resultDic objectForKey:@"desc"]]];
             }
         }];
     } else {
-        [self.navigationController pushViewController:self.loginViewController animated:YES];
-        [self.loginViewController getPhoneNumber];
+        // 联通
+        [[NTESQuickLoginManager sharedInstance] getPhoneNumberCompletion:^(NSDictionary * _Nonnull resultDic) {
+            NSNumber *boolNum = [resultDic objectForKey:@"success"];
+            BOOL success = [boolNum boolValue];
+            if (success) {
+                [self setCUCustomUI];
+                [self authorizeCULoginWithText:title];
+            } else {
+                [self.navigationController pushViewController:self.loginViewController animated:YES];
+                [self.loginViewController updateView];
+            }
+        }];
     }
 }
 
-- (void)authorizeCMCULoginWithText:(NSString *)title
+- (void)authorizeCMLoginWithText:(NSString *)title
 {
     [[NTESQuickLoginManager sharedInstance] authorizeLoginViewController:self result:^(NSDictionary * _Nonnull resultDic) {
         NSNumber *boolNum = [resultDic objectForKey:@"success"];
@@ -107,10 +120,38 @@
             self.accessToken = [resultDic objectForKey:@"accessToken"];
             [self startCheckWithText:title];
         } else {
-            [self dismissViewControllerAnimated:YES completion:nil];
-            [self.navigationController pushViewController:self.loginViewController animated:YES];
-            [self.loginViewController updateView];
-            [self.loginViewController showToastWithMsg:[NSString stringWithFormat:@"code:%@\ndesc:%@",  [resultDic objectForKey:@"resultCode"], [resultDic objectForKey:@"desc"]]];
+            NSString *resultCode = [resultDic objectForKey:@"resultCode"];
+            if ([resultCode isEqualToString:@"200020"]) {
+                NSLog(@"取消登录");
+            }
+            if ([resultCode isEqualToString:@"200060"]) {
+                NSLog(@"切换登录方式");
+                [self dismissViewControllerAnimated:YES completion:nil];
+                [self.navigationController pushViewController:self.loginViewController animated:YES];
+                [self.loginViewController updateView];
+            }
+        }
+    }];
+}
+
+- (void)authorizeCULoginWithText:(NSString *)title
+{
+    [[NTESQuickLoginManager sharedInstance] authorizeLoginViewController:self result:^(NSDictionary * _Nonnull resultDic) {
+        NSNumber *boolNum = [resultDic objectForKey:@"success"];
+        BOOL success = [boolNum boolValue];
+        if (success) {
+            self.accessToken = [resultDic objectForKey:@"accessToken"];
+            [self startCheckWithText:title];
+        } else {
+            NSString *resultCode = [resultDic objectForKey:@"resultCode"];
+            if ([resultCode isEqualToString:@"10104"]) {
+                NSLog(@"取消登录");
+            }
+            if ([resultCode isEqualToString:@"10105"]) {
+                NSLog(@"切换登录方式");
+                [self.navigationController pushViewController:self.loginViewController animated:YES];
+                [self.loginViewController updateView];
+            }
         }
     }];
 }
@@ -163,6 +204,167 @@
             }
         });
     }];
+}
+
+- (void)setCUCustomUI
+{
+    NTESQuickLoginCUModel *CUModel = [[NTESQuickLoginCUModel alloc] init];
+    CUModel.controllerType = NTESCUPresentController;
+    
+#ifdef TEST_MODE_QA
+    CUModel.destroyCrollerBySelf = NO;
+    CUModel.backgroundColor =[UIColor whiteColor];
+    CUModel.isAutoRelease = YES;
+    
+    CUModel.navBottomLineHidden = YES;
+    CUModel.navBarHidden = NO;
+    CUModel.navTranslucent = NO;
+    CUModel.navBgColor = UIColorFromHex(0x7846F1);
+    CUModel.navText = @"易盾一键登录";
+    CUModel.navTextColor = [UIColor whiteColor];
+    CUModel.navReturnImg = [UIImage imageNamed:@"back-1"];
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+    button.frame = CGRectMake(0,0, 44, 44);
+    [button setTitle:@"右键" forState:UIControlStateNormal];
+    [button addTarget:self action:@selector(clickRightBtn) forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem *rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:button];
+    CUModel.navControl = rightBarButtonItem;
+    
+    CUModel.topCustomHeight = 40;
+    
+    CUModel.logoImg = [UIImage imageNamed:@"logo1"];
+    CUModel.logoWidth = 150;
+    CUModel.logoHeight = 150;
+    CUModel.logoOffsetY = 50;
+    
+    CUModel.appNameColor = [UIColor blackColor];
+    CUModel.appNameHidden= NO;
+    CUModel.appNameHidden = YES;
+    
+    CUModel.numberOffsetY = 20;
+    CUModel.numberFont = [UIFont systemFontOfSize:26];
+    
+    CUModel.brandColor = UIColorFromHex(0x6551f6);
+    CUModel.brandOffsetY = 25;
+    
+    CUModel.logBtnText = @"一键登录";
+    CUModel.logBtnUsableBGColor = UIColorFromHex(0x6551f6);
+    CUModel.logBtnUnusableBGColor = UIColorFromHex(0x60b1fe);
+    
+    CUModel.swithAccHidden=NO;
+    CUModel.swithAccTextColor = UIColorFromHex(0x60b1fe);
+    
+    CUModel.appFPrivacyText = @"百度协议";
+    CUModel.appFPrivacyUrl = @"http://www.baidu.com";
+    CUModel.appSPrivacyText = @"QQ政策";
+    CUModel.appSPrivacyUrl = @"http://qq.com";
+    CUModel.privacyTextColor= UIColorFromHex(0x7846F1);
+    CUModel.privacyColor= UIColorFromHex(0x60b1fe);
+    CUModel.checkBoxHidden=NO;
+    CUModel.checkBoxValue= NO;
+    CUModel.checkBoxNormalImg = [UIImage imageNamed:@"checkBox"];
+    CUModel.checkBoxCheckedImg = [UIImage imageNamed:@"checkedBox"];
+    CUModel.loadingText= @"请稍后";
+    
+    
+    CUModel.topCustomView = ^(UIView *topCustomView) {
+        UILabel *label = [[UILabel alloc]init];
+        [label setFrame:CGRectMake(0, 5, topCustomView.frame.size.width - 10 * 2, 40)];
+        [label setBackgroundColor:[UIColor brownColor]];
+        [label setText:@"自定义添加 1"];
+        [topCustomView addSubview:label];
+    };
+    CUModel.bottomCustomView = ^(UIView *bottomCustomViews) {
+        UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
+        [button setFrame:CGRectMake(10, 10, bottomCustomViews.frame.size.width - 10 * 2, 40)];
+        [button setBackgroundColor:[UIColor grayColor]];
+        [button setTitle:@"自定义添加 2" forState:UIControlStateNormal];
+        [button addTarget:self action:@selector(testTouch) forControlEvents:UIControlEventTouchUpInside];
+        CALayer *layer = [button layer];
+        [layer setCornerRadius:10.0];
+        
+        UILabel *label = [[UILabel alloc]init];
+        [label setFrame:CGRectMake(10, 10 + 40 + 10, bottomCustomViews.frame.size.width - 10 * 2, 40)];
+        [label setBackgroundColor:[UIColor brownColor]];
+        [label setText:@"自定义添加 3"];
+        [bottomCustomViews addSubview:button];
+        [bottomCustomViews addSubview:label];
+    };
+#endif
+    
+    [[NTESQuickLoginManager sharedInstance] setupCUModel:CUModel];
+}
+
+- (void)setCMCustomUI
+{
+    NTESQuickLoginCMModel *CMModel = [[NTESQuickLoginCMModel alloc] init];
+    
+#ifdef TEST_MODE_QA
+    CMModel.authViewBlock = ^(UIView *customView) {
+        UIButton *btn = [[UIButton alloc]initWithFrame:CGRectMake(0, 0, 400, 80)];
+        [btn setTitle:@"自定义按钮" forState:(UIControlStateNormal)];
+        [btn setTitleColor:UIColorFromHex(0x60b1fe) forState:UIControlStateNormal];
+        [btn addTarget:self action:@selector(clickCustomBtn) forControlEvents:UIControlEventTouchUpInside];
+        [customView addSubview:btn];
+    };
+    CMModel.authPageBackgroundImage = [UIImage imageNamed:@"bg2"];
+    
+    CMModel.navColor = UIColorFromHex(0x7846F1);
+    CMModel.barStyle = 1;
+    CMModel.navText = [[NSAttributedString alloc]initWithString:@"易盾一键登录" attributes:@{NSForegroundColorAttributeName:[UIColor whiteColor]}];
+    CMModel.navReturnImg = [UIImage imageNamed:@"back-1"];
+    CMModel.navHidden = NO;
+    CMModel.navControl = [[UIBarButtonItem alloc]initWithTitle:@"右键" style:(UIBarButtonItemStyleDone) target:self action:@selector(clickRightBtn)];
+    
+    CMModel.logoImg = [UIImage imageNamed:@"logo1"];
+    CMModel.logoWidth = 150;
+    CMModel.logoHeight = 150;
+    CMModel.logoOffsetY = 40;
+    CMModel.logoHidden = NO;
+    
+    UIImage *norMal = [UIImage imageNamed:@"bg1"];
+    UIImage *invalied = [UIImage imageNamed:@"bg1"];
+    UIImage *highted = [UIImage imageNamed:@"bg1"];
+    CMModel.logBtnImgs = @[norMal,invalied,highted];
+    CMModel.logBtnText = @"一键登录";
+    CMModel.logBtnTextColor = [UIColor whiteColor];
+    CMModel.logBtnOffsetY = 260+50;
+    
+    CMModel.numberSize = 30;
+    CMModel.numberColor = [UIColor blackColor];
+    CMModel.numFieldOffsetY = 260;
+    
+    CMModel.swithAccTextColor = UIColorFromHex(0x60b1fe);
+    CMModel.swithAccHidden = NO;
+    CMModel.switchOffsetY = 260+100;
+    
+    CMModel.appPrivacyOne = @[@"百度协议",@"https://www.baidu.com"];
+    CMModel.appPrivacyTwo = @[@"QQ政策",@"http://qq.com"];
+    CMModel.appPrivacyColor = @[UIColorFromHex(0x7846F1), UIColorFromHex(0x60b1fe)];
+    CMModel.checkedImg = [UIImage imageNamed:@"checkedBox"];
+    CMModel.uncheckedImg = [UIImage imageNamed:@"checkBox"];
+    CMModel.privacyState = YES;
+    CMModel.privacyOffsetY = 100;
+    
+    CMModel.sloganTextColor = UIColorFromHex(0x6551f6);
+    CMModel.sloganOffsetY =  210;
+#endif
+    
+    [[NTESQuickLoginManager sharedInstance] setupCMModel:CMModel];
+}
+
+- (void)testTouch{
+    NSLog(@"test touch.");
+}
+
+- (void)clickRightBtn
+{
+    NSLog(@"点击了右键");
+}
+
+- (void)clickCustomBtn
+{
+    NSLog(@"点击了自定义按钮");
 }
 
 - (void)customInitSubViews
