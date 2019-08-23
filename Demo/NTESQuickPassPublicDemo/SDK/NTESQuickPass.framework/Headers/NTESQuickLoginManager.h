@@ -19,7 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
 typedef void(^NTESQLInitHandler)(NSDictionary * _Nullable params, BOOL success);
 
 /**
- *  @abstract   blockkk
+ *  @abstract   block
  *
  *  @说明        运营商预取号结果的回调，包含预取号是否成功、脱敏手机号（仅电信返回脱敏手机号）、运营商结果码（请参照运营商文档中提供的错误码信息）和描述信息
  *              ⚠️ 联通预取号无法获取脱敏手机号，需调用pushAuthorizePage拉起授权页面显示
@@ -99,21 +99,21 @@ typedef void(^NTESQLAuthorizeHandler)(NSDictionary *resultDic);
 /**
  *  @abstract   设置移动授权登录界面model，⚠️注意：此方法需嵌套在getPhoneNumberCompletion的回调中使用，且在authorizeLoginViewController:result:之前调用
  *
- *  @param      model   移动登录界面model
+ *  @param      model   移动登录界面model，必传
  */
 - (void)setupCMModel:(NTESQuickLoginCMModel *)model;
 
 /**
  *  @abstract   设置联通授权登录界面model，⚠️注意：此方法需嵌套在getPhoneNumberCompletion的回调中使用，且在authorizeLoginViewController:result:之前调用
  *
- *  @param      model   联通登录界面model
+ *  @param      model   联通登录界面model，必传
  */
 - (void)setupCUModel:(NTESQuickLoginCUModel *)model;
 
 /**
  *  @abstract   联通、移动 - 授权登录（取号接口），⚠️注意：此方法需嵌套在getPhoneNumberCompletion的回调中使用，且在setupCMModel:或setupCUModel:之后调用
  *
- *  @param      viewController      将拉起移动、联通运营商授权页面的上级VC
+ *  @param      viewController      将拉起移动、联通运营商授权页面的上级VC，必传
  *  @param      authorizeHandler    登录授权结果回调，包含认证成功和认证失败，认证失败情况包括取号失败、用户取消登录（点按返回按钮）和切换登录方式，可根据code码做后续自定义操作
  *                                  取消登录:移动返回code码200020，联通返回10104
  *                                  切换登录方式:移动返回code码200060，联通返回10105

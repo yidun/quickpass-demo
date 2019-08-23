@@ -210,6 +210,7 @@
 {
     NTESQuickLoginCUModel *CUModel = [[NTESQuickLoginCUModel alloc] init];
     CUModel.controllerType = NTESCUPresentController;
+    CUModel.checkBoxValue= YES;
     
 #ifdef TEST_MODE_QA
     CUModel.destroyCrollerBySelf = NO;
@@ -261,7 +262,6 @@
     CUModel.privacyTextColor= UIColorFromHex(0x7846F1);
     CUModel.privacyColor= UIColorFromHex(0x60b1fe);
     CUModel.checkBoxHidden=NO;
-    CUModel.checkBoxValue= NO;
     CUModel.checkBoxNormalImg = [UIImage imageNamed:@"checkBox"];
     CUModel.checkBoxCheckedImg = [UIImage imageNamed:@"checkedBox"];
     CUModel.loadingText= @"请稍后";
@@ -298,6 +298,7 @@
 - (void)setCMCustomUI
 {
     NTESQuickLoginCMModel *CMModel = [[NTESQuickLoginCMModel alloc] init];
+    CMModel.privacyState = YES;
     
 #ifdef TEST_MODE_QA
     CMModel.authViewBlock = ^(UIView *customView) {
@@ -343,7 +344,6 @@
     CMModel.appPrivacyColor = @[UIColorFromHex(0x7846F1), UIColorFromHex(0x60b1fe)];
     CMModel.checkedImg = [UIImage imageNamed:@"checkedBox"];
     CMModel.uncheckedImg = [UIImage imageNamed:@"checkBox"];
-    CMModel.privacyState = YES;
     CMModel.privacyOffsetY = 100;
     
     CMModel.sloganTextColor = UIColorFromHex(0x6551f6);

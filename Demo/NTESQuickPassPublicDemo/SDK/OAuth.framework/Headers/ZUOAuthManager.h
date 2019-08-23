@@ -9,8 +9,8 @@
 #import <UIKit/UIKit.h>
 #import "ZOAUResultListener.h"
 #import "ZOAUCustomModel.h"
-
 #import "ZOAuthManager.h"
+
 @interface ZUOAuthManager : ZOAuthManager
 
 

@@ -11,7 +11,7 @@
 
 //#define TEST_MODE
 
-#define TEST_MODE_QA
+//#define TEST_MODE_QA
 
 #ifdef TEST_MODE
 #define QL_BUSINESSID                @"3cc9408f47414f03a75947c108e60034"

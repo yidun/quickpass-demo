@@ -32,6 +32,9 @@ typedef void(^bottomCustomViews)(UIView *bottomCustomViews);
 @property (nonatomic,assign) BOOL destroyCrollerBySelf;
 /** 授权页销魂时是否自动释放SDK内部的单例对象（默认为自动释放）*/
 @property (nonatomic,assign) BOOL isAutoRelease;
+/** 是否在授权页WillDisappear时销毁单例（默认为NO,请按需使用）；
+ 如果您确认使用此属性，并设置为YES，授权页会在页面销毁前销毁SDK单例对象*/
+@property (nonatomic,assign) BOOL isAutoReleaseEarlier;
 
 #pragma mark - 导航栏设置
 /**隐藏导航栏尾部线条(默认显示)*/
@@ -54,6 +57,16 @@ typedef void(^bottomCustomViews)(UIView *bottomCustomViews);
 @property (nonatomic,strong) UIImage *navReturnImg;
 /**导航栏右侧自定义控件*/
 @property (nonatomic,strong) UIBarButtonItem *navControl;
+/**PushController方式:授权页消失时重新设置是否显示底线    默认NO （按需使用)*/
+@property (nonatomic,assign) BOOL resetNavBottomLineHidden;
+/**PushController方式:授权页消失时重新设置是否显示导航栏  默认NO （按需使用)*/
+@property (nonatomic,assign) BOOL resetNavBar;
+/**PushController方式:授权页消失时重新设置导航栏透明属性  默认NO （按需使用)*/
+@property (nonatomic,assign) BOOL resetNavTranslucent;
+/**PushController方式:授权页消失时重新设置导航栏背景色   默认是空 （按需使用)*/
+@property (nonatomic,strong) UIColor *resetNavBgColor;
+/**PushController方式:授权页消失时重新设置导航栏图片     默认是空（按需使用)*/
+@property (nonatomic,strong) UIImage *resetNavBgImage;
 
 #pragma mark - 自定义区域（导航下方）设置
 /**自定义区域高度*/
@@ -112,6 +125,10 @@ typedef void(^bottomCustomViews)(UIView *bottomCustomViews);
 @property (nonatomic,strong) UIColor *logBtnUsableBGColor;
 /**登录按钮背景颜色(不可用状态)*/
 @property (nonatomic,strong) UIColor *logBtnUnusableBGColor;
+/**登录按钮宽度 (<=0无效）  loginButtonWidth（实际宽度） = screenWidth - logBtnLeading*2 */
+@property (nonatomic,assign) CGFloat logBtnLeading;
+/**登录按钮高度 (<=0无效)*/
+@property (nonatomic,assign) CGFloat logBtnHeight;
 
 #pragma mark - 其他登录方式设置
 /**其他登录方式字体颜色*/
@@ -124,12 +141,18 @@ typedef void(^bottomCustomViews)(UIView *bottomCustomViews);
 @property (nonatomic,assign) CGFloat swithAccOffsetX;
 /**隐藏其他登录方式按钮（默认显示）*/
 @property (nonatomic,assign) BOOL swithAccHidden;
+/**隐藏其他登录方式按钮文本对齐方式 默认右对齐*/
+@property (nonatomic,assign) NSTextAlignment swithAccTextAlignment;
+/**隐藏其他登录方式按钮文本*/
+@property(nonatomic,copy)NSString * switchText;
 
 #pragma mark - 隐私条款设置
 /**隐藏复选框（默认显示）*/
 @property (nonatomic,assign) BOOL checkBoxHidden;
 /**复选框默认值（默认不选中）*/
 @property (nonatomic,assign) BOOL checkBoxValue;
+/**复选框宽度（宽度=高度） <=0无效 */
+@property(nonatomic,assign)CGFloat checkBoxWidth;
 /**复选框选中时图片*/
 @property (nonatomic,strong) UIImage *checkBoxCheckedImg;
 /**复选框未选中时图片*/
@@ -148,6 +171,18 @@ typedef void(^bottomCustomViews)(UIView *bottomCustomViews);
 @property (nonatomic,strong) NSString *appSPrivacyText;
 /**开发者隐私条款协议url（第二个协议）*/
 @property (nonatomic,strong) NSString *appSPrivacyUrl;
+/**隐私条款左边的复选框Y偏移量 （相对于隐私条款的偏移）*/
+@property (nonatomic,assign) CGFloat checkBoxOffsetY;
+/**隐私条款文本的对齐方式； 默认居中*/
+@property(nonatomic,assign)NSTextAlignment privacyTextAlignment;
+/**隐私条款和@“并授权***”之间的内容，默认为空
+ 可以使用此属性添加换行符或者其他纯文本内容 （隐私条款和复选框默认整体居中）*/
+@property(nonatomic,copy)NSString * stringAfterPrivacy;
+/**隐私条款和复选框的整体左右偏移 （按需使用）
+ 默认边距最小是20
+ 使用规则：最小边距=20+（privacyGapToScreen）
+ （隐私条款和复选框默认整体居中）*/
+@property(nonatomic,assign)CGFloat privacyMinimumGapToScreen;
 
 #pragma mark - loading设置
 /**loading提示文字*/
@@ -170,6 +205,10 @@ typedef void(^bottomCustomViews)(UIView *bottomCustomViews);
 #pragma mark - 协议页设置
 /**如果授权页设置了透明导航栏 在点击打开协议时 是否为协议页添加背景 (默认不透明白色)*/
 @property(nonatomic,assign)BOOL ifAddPrivacyPageBG;
+
+#pragma mark - tip设置
+/**提示的偏移 = 0无效*/
+@property (nonatomic,assign) CGFloat tipOffsetY;
 
 #pragma mark - topView和bottonView设置
 /**自定义topView*/
