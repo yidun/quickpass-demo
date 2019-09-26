@@ -18,11 +18,11 @@
 		BF7BEC9020D2194B00822DAA /* NTESQPHomePageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF7BEC8F20D2194B00822DAA /* NTESQPHomePageViewController.m */; };
 		BF7BEC9320D2198E00822DAA /* NTESQPLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF7BEC9220D2198E00822DAA /* NTESQPLoginViewController.m */; };
 		BF7BEC9620D219A200822DAA /* NTESQPLoginSuccessViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF7BEC9520D219A200822DAA /* NTESQPLoginSuccessViewController.m */; };
-		DC56CB592201A3C700D7B973 /* EAccountApiSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DC56CB552201A3C600D7B973 /* EAccountApiSDK.framework */; };
 		DC56CB5C2201A3CF00D7B973 /* libc++.1.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = DC56CB5B2201A3CF00D7B973 /* libc++.1.tbd */; };
 		DC56CB5E2201A3EB00D7B973 /* libz.1.2.8.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = DC56CB5D2201A3EB00D7B973 /* libz.1.2.8.tbd */; };
 		DC8C849822C3184E006C8683 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DC8C849722C3184D006C8683 /* CoreFoundation.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
-		DC8C849B22C35B90006C8683 /* NTESQuickPass.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DC8C849A22C35B90006C8683 /* NTESQuickPass.framework */; };
+		DCA5695323338444006AA8AA /* EAccountApiSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCA5695223338444006AA8AA /* EAccountApiSDK.framework */; };
+		DCA569552333844A006AA8AA /* NTESQuickPass.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCA569542333844A006AA8AA /* NTESQuickPass.framework */; };
 		DCA6620A2212C79300B29D37 /* NTESQLServiceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCA662092212C79300B29D37 /* NTESQLServiceViewController.m */; };
 		DCA662102214129B00B29D37 /* NTESDemoHttpRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = DCA6620F2214129B00B29D37 /* NTESDemoHttpRequest.m */; };
 		DCD4421722A665D6005AE167 /* TYRZSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCD4421622A665D6005AE167 /* TYRZSDK.framework */; };
@@ -81,11 +81,11 @@
 		BF7BEC9220D2198E00822DAA /* NTESQPLoginViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NTESQPLoginViewController.m; sourceTree = "<group>"; };
 		BF7BEC9420D219A200822DAA /* NTESQPLoginSuccessViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NTESQPLoginSuccessViewController.h; sourceTree = "<group>"; };
 		BF7BEC9520D219A200822DAA /* NTESQPLoginSuccessViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NTESQPLoginSuccessViewController.m; sourceTree = "<group>"; };
-		DC56CB552201A3C600D7B973 /* EAccountApiSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EAccountApiSDK.framework; path = SDK/EAccountApiSDK.framework; sourceTree = "<group>"; };
 		DC56CB5B2201A3CF00D7B973 /* libc++.1.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.1.tbd"; path = "usr/lib/libc++.1.tbd"; sourceTree = SDKROOT; };
 		DC56CB5D2201A3EB00D7B973 /* libz.1.2.8.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.1.2.8.tbd; path = usr/lib/libz.1.2.8.tbd; sourceTree = SDKROOT; };
 		DC8C849722C3184D006C8683 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
-		DC8C849A22C35B90006C8683 /* NTESQuickPass.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NTESQuickPass.framework; path = SDK/NTESQuickPass.framework; sourceTree = "<group>"; };
+		DCA5695223338444006AA8AA /* EAccountApiSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EAccountApiSDK.framework; path = SDK/EAccountApiSDK.framework; sourceTree = "<group>"; };
+		DCA569542333844A006AA8AA /* NTESQuickPass.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NTESQuickPass.framework; path = SDK/NTESQuickPass.framework; sourceTree = "<group>"; };
 		DCA662082212C79300B29D37 /* NTESQLServiceViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NTESQLServiceViewController.h; sourceTree = "<group>"; };
 		DCA662092212C79300B29D37 /* NTESQLServiceViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NTESQLServiceViewController.m; sourceTree = "<group>"; };
 		DCA6620E2214129B00B29D37 /* NTESDemoHttpRequest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NTESDemoHttpRequest.h; sourceTree = "<group>"; };
@@ -107,10 +107,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				DC8C849822C3184E006C8683 /* CoreFoundation.framework in Frameworks */,
-				DC8C849B22C35B90006C8683 /* NTESQuickPass.framework in Frameworks */,
+				DCA569552333844A006AA8AA /* NTESQuickPass.framework in Frameworks */,
 				DC56CB5E2201A3EB00D7B973 /* libz.1.2.8.tbd in Frameworks */,
 				DC56CB5C2201A3CF00D7B973 /* libc++.1.tbd in Frameworks */,
-				DC56CB592201A3C700D7B973 /* EAccountApiSDK.framework in Frameworks */,
+				DCA5695323338444006AA8AA /* EAccountApiSDK.framework in Frameworks */,
 				DCECF9EB228D75E800DC7E28 /* OAuth.framework in Frameworks */,
 				DCD4421722A665D6005AE167 /* TYRZSDK.framework in Frameworks */,
 				F2204C4852E46E6CCBC84386 /* libPods-NTESQuickPassPublicDemo.a in Frameworks */,
@@ -146,13 +146,13 @@
 		9030C3D043DE84465318FE6F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				DC8C849A22C35B90006C8683 /* NTESQuickPass.framework */,
+				DCA569542333844A006AA8AA /* NTESQuickPass.framework */,
+				DCA5695223338444006AA8AA /* EAccountApiSDK.framework */,
 				DC8C849722C3184D006C8683 /* CoreFoundation.framework */,
 				DCD4421B22A66673005AE167 /* TYRZResource.bundle */,
 				DC56CB5D2201A3EB00D7B973 /* libz.1.2.8.tbd */,
 				DC56CB5B2201A3CF00D7B973 /* libc++.1.tbd */,
 				DCD4421622A665D6005AE167 /* TYRZSDK.framework */,
-				DC56CB552201A3C600D7B973 /* EAccountApiSDK.framework */,
 				6E692FEFA580DF8B22EB7DDF /* libPods-NTESQuickPassPublicDemo.a */,
 				DCECF9E9228D75E800DC7E28 /* OAuth.framework */,
 				DCECF9EA228D75E800DC7E28 /* sdk_oauth.bundle */,
@@ -618,7 +618,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = J7ZZQ73G43;
+				DEVELOPMENT_TEAM = XB333SWTAF;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/SDK";
 				INFOPLIST_FILE = NTESQuickPassPublicDemo/Info.plist;
@@ -645,7 +645,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = J7ZZQ73G43;
+				DEVELOPMENT_TEAM = XB333SWTAF;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/SDK";
 				INFOPLIST_FILE = NTESQuickPassPublicDemo/Info.plist;

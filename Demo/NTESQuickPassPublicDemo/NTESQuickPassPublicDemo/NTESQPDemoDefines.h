@@ -30,7 +30,7 @@
 #endif
 
 #define CMServiceHTML                @"https://wap.cmpassport.com/resources/html/contract.html"
-#define CTServiceHTML                @"https://e.189.cn/sdk/agreement/content.do?type=main&appKey=&hidetop=true&returnUrl="
+#define CTServiceHTML                @"https://e.189.cn/sdk/agreement/detail.do?hidetop=true"
 
 #define NUMBER_OF_NONCE              32
 #define VERSION                      @"v1"

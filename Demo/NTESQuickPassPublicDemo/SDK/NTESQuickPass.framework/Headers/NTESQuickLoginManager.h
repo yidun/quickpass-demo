@@ -50,7 +50,7 @@ typedef void(^NTESQLAuthorizeHandler)(NSDictionary *resultDic);
 + (NTESQuickLoginManager *)sharedInstance;
 
 /**
- *  @abstract   判断当前上网卡的网络环境和运营商是否可以一键登录（必须开启蜂窝流量，必须上网网卡为移动或者电信运营商）
+ *  @abstract   判断当前上网卡的网络环境和运营商是否可以一键登录（必须开启蜂窝流量，必须上网网卡为移动、电信、联通运营商）
  */
 - (BOOL)shouldQuickLogin;
 

@@ -15,8 +15,6 @@
 
 @property (nonatomic, copy) NSString *token;
 
-- (void)getPhoneNumber;
-
 - (void)updateView;
 
 - (void)showToastWithMsg:(NSString *)msg;

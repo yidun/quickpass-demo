@@ -31,6 +31,10 @@
 
 @property (nonatomic, strong) NTESQLLoginViewController *loginViewController;
 
+@property (nonatomic, assign) BOOL shouldQL;
+
+@property (nonatomic, assign) BOOL precheckSuccess;
+
 @end
 
 @implementation NTESQLHomePageViewController
@@ -50,13 +54,15 @@
 
 #pragma mark - 一键登录
 - (void)registerQuickLogin {
-    BOOL shouldQL = [[NTESQuickLoginManager sharedInstance] shouldQuickLogin];
-    if (shouldQL) {
+    self.shouldQL = [[NTESQuickLoginManager sharedInstance] shouldQuickLogin];
+    if (self.shouldQL) {
         [[NTESQuickLoginManager sharedInstance] registerWithBusinessID:QL_BUSINESSID timeout:3*1000 configURL:nil extData:nil completion:^(NSDictionary * _Nullable params, BOOL success) {
             if (success) {
                 self.token = [params objectForKey:@"token"];
+                self.precheckSuccess = YES;
             } else {
                 NSLog(@"precheck失败");
+                self.precheckSuccess = NO;
             }
         }];
     }
@@ -74,6 +80,10 @@
 
 - (void)getPhoneNumberWithText:(NSString *)title
 {
+    if (!self.shouldQL || !self.precheckSuccess) {
+        NSLog(@"不允许一键登录");
+        return;
+    }
     self.loginViewController = [[NTESQLLoginViewController alloc] init];
     self.loginViewController.themeTitle = title;
     self.loginViewController.token = self.token;
@@ -81,7 +91,6 @@
     if ([[NTESQuickLoginManager sharedInstance] getCarrier] == 1) {
         // 电信
         [self.navigationController pushViewController:self.loginViewController animated:YES];
-        [self.loginViewController getPhoneNumber];
     } else if ([[NTESQuickLoginManager sharedInstance] getCarrier] == 2) {
         // 移动
         [[NTESQuickLoginManager sharedInstance] getPhoneNumberCompletion:^(NSDictionary * _Nonnull resultDic) {

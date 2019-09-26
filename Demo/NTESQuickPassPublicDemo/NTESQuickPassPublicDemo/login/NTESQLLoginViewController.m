@@ -46,6 +46,8 @@
 
 @property (nonatomic, strong) UITextField *verifyCodeTextField;
 
+@property (nonatomic, strong) UIActivityIndicatorView * activityIndicator;
+
 @end
 
 @implementation NTESQLLoginViewController
@@ -69,8 +71,10 @@
     [self shouldHideBottomView:YES];
     [self __initThemeLabel];
     [self __initPhoneLabel];
+    [self __initActivityIndicator];
     [self __initQuickLoginButton];
     [self __initCustomBottomView];
+    [self getPhoneNumber];
 }
 
 - (void)__initThemeLabel
@@ -100,6 +104,20 @@
     }
 }
 
+- (void)__initActivityIndicator
+{
+    if (!_activityIndicator) {
+        _activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        [_activityIndicator setColor:[UIColor blueColor]];
+        [self.view addSubview:_activityIndicator];
+        [_activityIndicator mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.center.equalTo(self.view);
+            make.width.equalTo(@200);
+            make.height.equalTo(@200);
+        }];
+    }
+}
+
 - (void)__initQuickLoginButton
 {
     if (!_quickLoginButton) {
@@ -109,6 +127,8 @@
         [_quickLoginButton setTitle:title forState:UIControlStateHighlighted];
         [_quickLoginButton setTitleColor:UIColorFromHex(0xffffff) forState:UIControlStateNormal];
         [_quickLoginButton setTitleColor:UIColorFromHex(0xffffff) forState:UIControlStateHighlighted];
+        [_quickLoginButton setUserInteractionEnabled:NO];
+        [_quickLoginButton setAlpha:0.7];
         _quickLoginButton.titleLabel.font = [UIFont systemFontOfSize:15.0f*KHeightScale];
         _quickLoginButton.layer.cornerRadius = 44.0*KHeightScale/2;
         _quickLoginButton.layer.masksToBounds = YES;
@@ -185,12 +205,18 @@
 
 - (void)getPhoneNumber
 {
+    [self.activityIndicator startAnimating];
+    [self.quickLoginButton setUserInteractionEnabled:NO];
+    [self.quickLoginButton setAlpha:0.7];
     [[NTESQuickLoginManager sharedInstance] getPhoneNumberCompletion:^(NSDictionary * _Nonnull resultDic) {
         dispatch_async(dispatch_get_main_queue(), ^{
+            [self.activityIndicator stopAnimating];
             NSNumber *boolNum = [resultDic objectForKey:@"success"];
             BOOL success = [boolNum boolValue];
             if (success) {
                 self.phoneLabel.text = [resultDic objectForKey:@"securityPhone"];
+                [self.quickLoginButton setUserInteractionEnabled:YES];
+                [self.quickLoginButton setAlpha:1.0];
             } else {
                 [self showToastWithMsg:[NSString stringWithFormat:@"code:%@\ndesc:%@",  [resultDic objectForKey:@"resultCode"], [resultDic objectForKey:@"desc"]]];
                 [self updateView];
