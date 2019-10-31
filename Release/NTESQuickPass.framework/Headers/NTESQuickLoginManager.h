@@ -94,17 +94,17 @@ typedef void(^NTESQLAuthorizeHandler)(NSDictionary *resultDic);
  *
  *  @param      authorizeHandler    登录授权结果回调
  */
-- (void)authorizeLoginCompletion:(NTESQLAuthorizeHandler)authorizeHandler;
+- (void)CTAuthorizeLoginCompletion:(NTESQLAuthorizeHandler)authorizeHandler;
 
 /**
- *  @abstract   设置移动授权登录界面model，⚠️注意：此方法需嵌套在getPhoneNumberCompletion的回调中使用，且在authorizeLoginViewController:result:之前调用
+ *  @abstract   设置移动授权登录界面model，⚠️注意：必须调用，此方法需嵌套在getPhoneNumberCompletion的回调中使用，且在authorizeLoginViewController:result:之前调用
  *
  *  @param      model   移动登录界面model，必传
  */
 - (void)setupCMModel:(NTESQuickLoginCMModel *)model;
 
 /**
- *  @abstract   设置联通授权登录界面model，⚠️注意：此方法需嵌套在getPhoneNumberCompletion的回调中使用，且在authorizeLoginViewController:result:之前调用
+ *  @abstract   设置联通授权登录界面model，⚠️注意：必须调用，此方法需嵌套在getPhoneNumberCompletion的回调中使用，且在authorizeLoginViewController:result:之前调用
  *
  *  @param      model   联通登录界面model，必传
  */
@@ -113,13 +113,11 @@ typedef void(^NTESQLAuthorizeHandler)(NSDictionary *resultDic);
 /**
  *  @abstract   联通、移动 - 授权登录（取号接口），⚠️注意：此方法需嵌套在getPhoneNumberCompletion的回调中使用，且在setupCMModel:或setupCUModel:之后调用
  *
- *  @param      viewController      将拉起移动、联通运营商授权页面的上级VC，必传
  *  @param      authorizeHandler    登录授权结果回调，包含认证成功和认证失败，认证失败情况包括取号失败、用户取消登录（点按返回按钮）和切换登录方式，可根据code码做后续自定义操作
  *                                  取消登录:移动返回code码200020，联通返回10104
  *                                  切换登录方式:移动返回code码200060，联通返回10105
  */
-- (void)authorizeLoginViewController:(UIViewController *)viewController
-                              result:(NTESQLAuthorizeHandler)authorizeHandler;
+- (void)CUCMAuthorizeLoginCompletion:(NTESQLAuthorizeHandler)authorizeHandler;
 
 /**
  获取当前SDK版本号

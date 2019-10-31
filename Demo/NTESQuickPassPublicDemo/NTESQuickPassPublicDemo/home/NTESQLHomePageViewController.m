@@ -122,7 +122,7 @@
 
 - (void)authorizeCMLoginWithText:(NSString *)title
 {
-    [[NTESQuickLoginManager sharedInstance] authorizeLoginViewController:self result:^(NSDictionary * _Nonnull resultDic) {
+    [[NTESQuickLoginManager sharedInstance] CUCMAuthorizeLoginCompletion:^(NSDictionary * _Nonnull resultDic) {
         NSNumber *boolNum = [resultDic objectForKey:@"success"];
         BOOL success = [boolNum boolValue];
         if (success) {
@@ -145,7 +145,7 @@
 
 - (void)authorizeCULoginWithText:(NSString *)title
 {
-    [[NTESQuickLoginManager sharedInstance] authorizeLoginViewController:self result:^(NSDictionary * _Nonnull resultDic) {
+    [[NTESQuickLoginManager sharedInstance] CUCMAuthorizeLoginCompletion:^(NSDictionary * _Nonnull resultDic) {
         NSNumber *boolNum = [resultDic objectForKey:@"success"];
         BOOL success = [boolNum boolValue];
         if (success) {
@@ -218,6 +218,7 @@
 - (void)setCUCustomUI
 {
     NTESQuickLoginCUModel *CUModel = [[NTESQuickLoginCUModel alloc] init];
+    CUModel.currentVC = self;
     CUModel.controllerType = NTESCUPresentController;
     CUModel.checkBoxValue= YES;
     
@@ -265,9 +266,9 @@
     CUModel.swithAccTextColor = UIColorFromHex(0x60b1fe);
     
     CUModel.appFPrivacyText = @"百度协议";
-    CUModel.appFPrivacyUrl = @"http://www.baidu.com";
+    CUModel.appFPrivacyURL = [NSURL URLWithString:@"http://www.baidu.com"];
     CUModel.appSPrivacyText = @"QQ政策";
-    CUModel.appSPrivacyUrl = @"http://qq.com";
+    CUModel.appSPrivacyURL = [NSURL URLWithString:@"http://qq.com"];
     CUModel.privacyTextColor= UIColorFromHex(0x7846F1);
     CUModel.privacyColor= UIColorFromHex(0x60b1fe);
     CUModel.checkBoxHidden=NO;
@@ -307,10 +308,11 @@
 - (void)setCMCustomUI
 {
     NTESQuickLoginCMModel *CMModel = [[NTESQuickLoginCMModel alloc] init];
+    CMModel.currentVC = self;
     CMModel.privacyState = YES;
     
 #ifdef TEST_MODE_QA
-    CMModel.authViewBlock = ^(UIView *customView) {
+    CMModel.authViewBlock = ^(UIView *customView, CGRect logoFrame, CGRect numberFrame, CGRect sloganFrame, CGRect loginBtnFrame, CGRect checkBoxFrame, CGRect privacyFrame) {
         UIButton *btn = [[UIButton alloc]initWithFrame:CGRectMake(0, 0, 400, 80)];
         [btn setTitle:@"自定义按钮" forState:(UIControlStateNormal)];
         [btn setTitleColor:UIColorFromHex(0x60b1fe) forState:UIControlStateNormal];
@@ -323,40 +325,41 @@
     CMModel.barStyle = 1;
     CMModel.navText = [[NSAttributedString alloc]initWithString:@"易盾一键登录" attributes:@{NSForegroundColorAttributeName:[UIColor whiteColor]}];
     CMModel.navReturnImg = [UIImage imageNamed:@"back-1"];
-    CMModel.navHidden = NO;
+    CMModel.navCustom = NO;
     CMModel.navControl = [[UIBarButtonItem alloc]initWithTitle:@"右键" style:(UIBarButtonItemStyleDone) target:self action:@selector(clickRightBtn)];
     
     CMModel.logoImg = [UIImage imageNamed:@"logo1"];
     CMModel.logoWidth = 150;
     CMModel.logoHeight = 150;
-    CMModel.logoOffsetY = 40;
+    CMModel.logoOffsetY = @40;
     CMModel.logoHidden = NO;
     
     UIImage *norMal = [UIImage imageNamed:@"bg1"];
     UIImage *invalied = [UIImage imageNamed:@"bg1"];
     UIImage *highted = [UIImage imageNamed:@"bg1"];
     CMModel.logBtnImgs = @[norMal,invalied,highted];
-    CMModel.logBtnText = @"一键登录";
-    CMModel.logBtnTextColor = [UIColor whiteColor];
-    CMModel.logBtnOffsetY = 260+50;
+    CMModel.logBtnText = [[NSAttributedString alloc] initWithString:@"登录" attributes:@{NSForegroundColorAttributeName:[UIColor whiteColor]}];
+    CMModel.logBtnOffsetY = @(260+50);
     
-    CMModel.numberSize = 30;
-    CMModel.numberColor = [UIColor blackColor];
-    CMModel.numFieldOffsetY = 260;
-    
-    CMModel.swithAccTextColor = UIColorFromHex(0x60b1fe);
+    CMModel.switchAccText = [[NSAttributedString alloc] initWithString:@"切换登录方式" attributes:@{NSForegroundColorAttributeName:[UIColor blackColor]}];
     CMModel.swithAccHidden = NO;
-    CMModel.switchOffsetY = 260+100;
+    CMModel.switchOffsetY = @(260+100);
     
-    CMModel.appPrivacyOne = @[@"百度协议",@"https://www.baidu.com"];
-    CMModel.appPrivacyTwo = @[@"QQ政策",@"http://qq.com"];
-    CMModel.appPrivacyColor = @[UIColorFromHex(0x7846F1), UIColorFromHex(0x60b1fe)];
+        // 隐私的内容模板
+    CMModel.appPrivacyDemo = [[NSAttributedString alloc]initWithString:@"登录本界面并同意授权&&默认&&、腾讯协议和百度协议进行本机号码登录" attributes:@{NSForegroundColorAttributeName:UIColor.blackColor}];
+    NSAttributedString *str1 = [[NSAttributedString alloc]initWithString:@"腾讯协议" attributes:@{NSLinkAttributeName:@"https://www.qq.com"}];
+    NSAttributedString *str2 = [[NSAttributedString alloc]initWithString:@"百度协议" attributes:@{NSLinkAttributeName:@"https://www.baidu.com"}];
+    CMModel.appPrivacy = @[str1, str2];
+    CMModel.privacyColor = UIColorFromHex(0x7846F1);
     CMModel.checkedImg = [UIImage imageNamed:@"checkedBox"];
     CMModel.uncheckedImg = [UIImage imageNamed:@"checkBox"];
-    CMModel.privacyOffsetY = 100;
+    CMModel.privacyOffsetY = @50;
+    CMModel.privacyState = YES;
     
-    CMModel.sloganTextColor = UIColorFromHex(0x6551f6);
-    CMModel.sloganOffsetY =  210;
+    CMModel.sloganText = [[NSAttributedString alloc] initWithString:@"切换登录方式" attributes:@{NSForegroundColorAttributeName:[UIColor blackColor]}];
+    CMModel.sloganOffsetY =  @210;
+
+    CMModel.authWindow = NO;
 #endif
     
     [[NTESQuickLoginManager sharedInstance] setupCMModel:CMModel];

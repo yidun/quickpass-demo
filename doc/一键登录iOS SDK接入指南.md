@@ -69,7 +69,7 @@
 * 6、授权认证接口
 	* 电信：登录界面由接入方自行设计，但必须遵守电信认证授权页面设计规范，调用方式如下：
 
-			[[NTESQuickLoginManager sharedInstance] authorizeLoginCompletion:^(NSDictionary * _Nonnull resultDic) {
+			[[NTESQuickLoginManager sharedInstance] CTAuthorizeLoginCompletion:^(NSDictionary * _Nonnull resultDic) {
 				NSNumber *boolNum = [resultDic objectForKey:@"success"];
 	            BOOL success = [boolNum boolValue];
 		        if (success) {
@@ -77,10 +77,10 @@
 		        } else {
 					// 取号失败
 		        }
-		    }];
+		    }];   
 	* 移动、联通:登录界面使用运营商提供的授权页面，调用方式如下：
 			
-			[[NTESQuickLoginManager sharedInstance] authorizeLoginViewController:self result:^(NSDictionary * _Nonnull resultDic) {
+			 [[NTESQuickLoginManager sharedInstance] CUCMAuthorizeLoginCompletion:^(NSDictionary * _Nonnull resultDic) {
 		        NSNumber *boolNum = [resultDic objectForKey:@"success"];
 		        BOOL success = [boolNum boolValue];
 		        if (success) {
@@ -93,6 +93,7 @@
  - 移动授权页面自定义
  
 			NTESQuickLoginCMModel *CMModel = [[NTESQuickLoginCMModel alloc] init];
+	 		CMModel.currentVC = self;
 	 		
 	 		/* 在此处进行自定义，可自定义项参见NTESQuickLoginCMModel.h */
 	 		
@@ -100,15 +101,16 @@
  - 联通授权页面自定义
  
 	 		 NTESQuickLoginCUModel *CUModel = [[NTESQuickLoginCUModel alloc] init];
+			 CUModel.currentVC = self;
 			
 			/* 在此处进行自定义，可自定义项参见NTESQuickLoginCUModel.h */
 			
 			[[NTESQuickLoginManager sharedInstance] setupCUModel:CUModel];
-		
+* 8、授权页面自定义项及规范
+ - 电信授权页面定义规范
+ 	<img src="https://github.com/dilemmaxk/learnIOS/raw/master/%E7%94%B5%E4%BF%A1%E6%8E%88%E6%9D%83%E9%A1%B5%E9%9D%A2%E8%A7%84%E8%8C%83.png" width="100%" height="100%">
  - 移动授权页面可自定义项
- 	
  	<img src="https://github.com/dilemmaxk/learnIOS/raw/master/%E7%A7%BB%E5%8A%A8%E8%87%AA%E5%AE%9A%E4%B9%89%E9%A1%B9.png" width="100%" height="100%">
- 	
  - 联通授权页面可自定义项  
 	<img src="https://github.com/dilemmaxk/learnIOS/raw/master/%E8%81%94%E9%80%9A%E8%87%AA%E5%AE%9A%E4%B9%89%E9%A1%B9.png" width="100%" height="100%">
  __备注:__  在获取accessToken成功的回调里，结合第4步获取的token字段，做下一步check接口的验证；在获取accessToken失败的回调里做客户端的下一步处理，如短信验证。    
@@ -212,17 +214,17 @@
 		 *
 		 *  @param      authorizeHandler    登录授权结果回调
 		 */
-		- (void)authorizeLoginCompletion:(NTESQLAuthorizeHandler)authorizeHandler;
+		- (void)CTAuthorizeLoginCompletion(NTESQLAuthorizeHandler)authorizeHandler;
 -
 		/**
-		 *  @abstract   设置移动授权登录界面model，⚠️注意：此方法需嵌套在getPhoneNumberCompletion的回调中使用，且在authorizeLoginViewController:result:之前调用
+		 *  @abstract   设置移动授权登录界面model，⚠️注意：必须调用，此方法需嵌套在getPhoneNumberCompletion的回调中使用，且在authorizeLoginViewController:result:之前调用
 		 *
 		 *  @param      model   移动登录界面model
 		 */
 		- (void)setupCMModel:(NTESQuickLoginCMModel *)model;
 -
 		/**
-		 *  @abstract   设置联通授权登录界面model，⚠️注意：此方法需嵌套在getPhoneNumberCompletion的回调中使用，且在authorizeLoginViewController:result:之前调用
+		 *  @abstract   设置联通授权登录界面model，⚠️注意：必须调用，此方法需嵌套在getPhoneNumberCompletion的回调中使用，且在authorizeLoginViewController:result:之前调用
 		 *
 		 *  @param      model   联通登录界面model
 		 */
@@ -236,8 +238,7 @@
 		 *                                  取消登录:移动返回code码200020，联通返回10104
 		 *                                  切换登录方式:移动返回code码200060，联通返回10105
 		 */
-		- (void)authorizeLoginViewController:(UIViewController *)viewController
-		                              result:(NTESQLAuthorizeHandler)authorizeHandler;
+		- (void)CUCMAuthorizeLoginCompletion:(NTESQLAuthorizeHandler)authorizeHandler;
 -
 		/**
 		 获取当前SDK版本号

@@ -43,11 +43,12 @@
  中断取号登录流程
  1.取消取号请求
  2.如果已经拉起授权页时，取消授权页显示
+ @param tryToCancelRequest 取消取号请求
  @param ifDisappear 是否强制收起可能已经拉起的授权页
- @param ifCancel 是否取消最近的一次拉起授权页/取消本次登录流程的授权页拉起
+ @param ifCancel 和tryToCancelRequest 一起使用 是否取消最近的一次拉起授权页/取消本次登录流程的授权页拉起
  eg:只取消网络请求 [Who interruptTheCTLoginFlowANDIfDisapperTheShowingLoginPage:NO cancelTheNextAuthorizationPageToPullUp:NO];
  */
-- (void)interruptTheCTLoginFlowANDIfDisapperTheShowingLoginPage:(BOOL)ifDisappear cancelTheNextAuthorizationPageToPullUp:(BOOL)ifCancel;
+- (void)interruptTheCTLoginFlow:(BOOL)tryToCancelRequest ifDisapperTheShowingLoginPage:(BOOL)ifDisappear  cancelTheNextAuthorizationPageToPullUp:(BOOL)ifCancel;
 
 
 /**

@@ -23,10 +23,16 @@ typedef void(^bottomCustomViews)(UIView *bottomCustomViews);
 
 @interface NTESQuickLoginCUModel : NSObject
 
+#pragma mark VC必传属性
+/**当前VC,注意:要用一键登录这个值必传*/
+@property (nonatomic,strong) UIViewController *currentVC;
+
 #pragma mark - 授权页
 /**授权页背景颜色*/
 @property (nonatomic,strong) UIColor *backgroundColor;
-/**授权页弹出方式*/
+/**背景图片*/
+@property (nonatomic,strong) UIImage * bgImage;
+/**授权页弹出方式 默认使用PUSH*/
 @property (nonatomic,assign) NTESCUControllerType controllerType;
 /**授权页销毁是否交由app处理*/
 @property (nonatomic,assign) BOOL destroyCrollerBySelf;
@@ -35,6 +41,8 @@ typedef void(^bottomCustomViews)(UIView *bottomCustomViews);
 /** 是否在授权页WillDisappear时销毁单例（默认为NO,请按需使用）；
  如果您确认使用此属性，并设置为YES，授权页会在页面销毁前销毁SDK单例对象*/
 @property (nonatomic,assign) BOOL isAutoReleaseEarlier;
+/**SDK会直接使用您的设置值，如果不传默认指定UIModalPresentationFullScreen*/
+@property (nonatomic,assign) UIModalPresentationStyle modalPresentationStyle;
 
 #pragma mark - 导航栏设置
 /**隐藏导航栏尾部线条(默认显示)*/
@@ -48,7 +56,7 @@ typedef void(^bottomCustomViews)(UIView *bottomCustomViews);
 /**导航栏背景图片*/
 @property (nonatomic,strong) UIImage *navBgImage;
 /**导航栏标题*/
-@property (nonatomic,strong) NSString *navText;
+@property (nonatomic,copy) NSString *navText;
 /**导航栏标题字体*/
 @property (nonatomic,strong) UIFont *navTextFont;
 /**导航栏标题颜色*/
@@ -112,7 +120,7 @@ typedef void(^bottomCustomViews)(UIView *bottomCustomViews);
 
 #pragma mark - 登录按钮设置
 /**登录按钮文本*/
-@property (nonatomic,strong) NSString *logBtnText;
+@property (nonatomic,copy) NSString *logBtnText;
 /**登录按钮字体*/
 @property (nonatomic,strong) UIFont *logBtnTextFont;
 /**登录按钮文本颜色*/
@@ -164,13 +172,17 @@ typedef void(^bottomCustomViews)(UIView *bottomCustomViews);
 /**隐私条款协议颜色*/
 @property (nonatomic,strong) UIColor *privacyColor;
 /**开发者隐私条款协议名称（第一个协议）*/
-@property (nonatomic,strong) NSString *appFPrivacyText;
+@property (nonatomic,copy) NSString *appFPrivacyText;
 /**开发者隐私条款协议url（第一个协议）*/
-@property (nonatomic,strong) NSString *appFPrivacyUrl;
+@property (nonatomic,copy) NSString *appFPrivacyUrl;
+//1.功能=appFPrivacyUrl;2.同时设置时，appFPrivacyURL优先级>appFPrivacyUrl;3.appFPrivacyUrl在后续版本会弃用4.推荐使用appFPrivacyURL,请注意参数类型
+@property (nonatomic,strong) NSURL *appFPrivacyURL;
 /**开发者隐私条款协议名称（第二个协议）*/
-@property (nonatomic,strong) NSString *appSPrivacyText;
+@property (nonatomic,copy) NSString *appSPrivacyText;
 /**开发者隐私条款协议url（第二个协议）*/
-@property (nonatomic,strong) NSString *appSPrivacyUrl;
+@property (nonatomic,copy) NSString *appSPrivacyUrl;
+//1.功能=appSPrivacyURL;2.同时设置时，appSPrivacyURL优先级>appSPrivacyUrl;3.appSPrivacyUrl在后续版本会弃用4.推荐使用appSPrivacyURL，请注意参数类型
+@property (nonatomic,strong) NSURL *appSPrivacyURL;
 /**隐私条款左边的复选框Y偏移量 （相对于隐私条款的偏移）*/
 @property (nonatomic,assign) CGFloat checkBoxOffsetY;
 /**隐私条款文本的对齐方式； 默认居中*/
@@ -186,7 +198,7 @@ typedef void(^bottomCustomViews)(UIView *bottomCustomViews);
 
 #pragma mark - loading设置
 /**loading提示文字*/
-@property (nonatomic,strong) NSString *loadingText;
+@property (nonatomic,copy) NSString *loadingText;
 /**loading提示文字颜色*/
 @property (nonatomic,strong) UIColor *loadingTextColor;
 /**loading提示文字字体*/

@@ -7,10 +7,13 @@ typedef NS_ENUM(NSUInteger, ControllerType) {
 
 @interface ZOAUCustomModel : NSObject
 
+
 //MARK:授权页*************
 
 /**授权页背景颜色*/
 @property (nonatomic,strong) UIColor *backgroundColor;
+/**背景图片*/
+@property(nonatomic,strong)UIImage * bgImage;
 /**授权页弹出方式 默认使用PUSH*/
 @property (nonatomic,assign) ControllerType controllerType;
 /**授权页销毁是否交由app处理 如果想自己控制授权页的收起 设置为YES 默认是NO*/
@@ -20,6 +23,8 @@ typedef NS_ENUM(NSUInteger, ControllerType) {
 /** 是否在授权页WillDisappear时销毁单例（默认为NO,请按需使用）；
  如果您确认使用此属性，并设置为YES，授权页会在页面销毁前销毁SDK单例对象*/
 @property (nonatomic,assign) BOOL isAutoReleaseEarlier;
+/**SDK会直接使用您的设置值，如果不传默认指定UIModalPresentationFullScreen*/
+@property (nonatomic,assign) UIModalPresentationStyle modalPresentationStyle;
 
 
 //MARK:导航栏设置*************
@@ -55,6 +60,7 @@ typedef NS_ENUM(NSUInteger, ControllerType) {
 /**PushController方式:授权页消失时重新设置导航栏图片     默认是空（按需使用)*/
 @property (nonatomic,strong) UIImage *resetNavBgImage;
 
+
 //MARK:自定义区域（导航下方）设置************
 
 /**自定义区域高度*/
@@ -71,6 +77,7 @@ typedef NS_ENUM(NSUInteger, ControllerType) {
 @property (nonatomic,assign) CGFloat logoHeight;
 /**LOGO图片偏移量*/
 @property (nonatomic,assign) CGFloat logoOffsetY;
+
 
 //MARK:应用名称设置************
 
@@ -172,10 +179,14 @@ typedef NS_ENUM(NSUInteger, ControllerType) {
 @property (nonatomic,copy) NSString *appFPrivacyText;
 /**开发者隐私条款协议url（第一个协议）*/
 @property (nonatomic,copy) NSString *appFPrivacyUrl;
+//1.功能=appFPrivacyUrl;2.同时设置时，appFPrivacyURL优先级>appFPrivacyUrl;3.appFPrivacyUrl在后续版本会弃用4.推荐使用appFPrivacyURL,请注意参数类型
+@property (nonatomic,strong) NSURL *appFPrivacyURL;
 /**开发者隐私条款协议名称（第二个协议）*/
 @property (nonatomic,copy) NSString *appSPrivacyText;
 /**开发者隐私条款协议url（第二个协议）*/
 @property (nonatomic,copy) NSString *appSPrivacyUrl;
+//1.功能=appSPrivacyURL;2.同时设置时，appSPrivacyURL优先级>appSPrivacyUrl;3.appSPrivacyUrl在后续版本会弃用4.推荐使用appSPrivacyURL，请注意参数类型
+@property (nonatomic,strong) NSURL *appSPrivacyURL;
 /**隐私条款左边的复选框Y偏移量 （相对于隐私条款的偏移）*/
 @property (nonatomic,assign) CGFloat checkBoxOffsetY;
 /**隐私条款文本的对齐方式； 默认居中*/
@@ -188,6 +199,7 @@ typedef NS_ENUM(NSUInteger, ControllerType) {
  使用规则：最小边距=20+（privacyGapToScreen）
  （隐私条款和复选框默认整体居中）*/
 @property(nonatomic,assign)CGFloat privacyMinimumGapToScreen;
+
 
 //MARK:loading设置************
 
@@ -214,6 +226,7 @@ typedef NS_ENUM(NSUInteger, ControllerType) {
 
 //如果授权页设置了透明导航栏 在点击打开协议时 是否为协议页添加背景 (默认不透明白色)
 @property(nonatomic,assign)BOOL ifAddPrivacyPageBG;
+
 
 //MARK:tip设置************
 
