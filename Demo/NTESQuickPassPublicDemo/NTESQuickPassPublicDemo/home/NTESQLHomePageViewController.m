@@ -132,12 +132,13 @@
             NSString *resultCode = [resultDic objectForKey:@"resultCode"];
             if ([resultCode isEqualToString:@"200020"]) {
                 NSLog(@"取消登录");
-            }
-            if ([resultCode isEqualToString:@"200060"]) {
+            } else if ([resultCode isEqualToString:@"200060"]) {
                 NSLog(@"切换登录方式");
                 [self dismissViewControllerAnimated:YES completion:nil];
                 [self.navigationController pushViewController:self.loginViewController animated:YES];
                 [self.loginViewController updateView];
+            } else {
+                NSLog(@"登录失败");
             }
         }
     }];
@@ -155,11 +156,12 @@
             NSString *resultCode = [resultDic objectForKey:@"resultCode"];
             if ([resultCode isEqualToString:@"10104"]) {
                 NSLog(@"取消登录");
-            }
-            if ([resultCode isEqualToString:@"10105"]) {
+            } else if ([resultCode isEqualToString:@"10105"]) {
                 NSLog(@"切换登录方式");
                 [self.navigationController pushViewController:self.loginViewController animated:YES];
                 [self.loginViewController updateView];
+            } else {
+                NSLog(@"登录失败");
             }
         }
     }];
