@@ -48,6 +48,8 @@
 
 @property (nonatomic, strong) UIActivityIndicatorView * activityIndicator;
 
+@property (nonatomic, assign) NSInteger carrierType;
+
 @end
 
 @implementation NTESQLLoginViewController
@@ -56,6 +58,7 @@
 {
     if (self = [super init]) {
         self.showQuickPassBottomView = NO;
+        self.carrierType = [[NTESQuickLoginManager sharedInstance] getCarrier];
     }
     return self;
 }
@@ -74,7 +77,12 @@
     [self __initActivityIndicator];
     [self __initQuickLoginButton];
     [self __initCustomBottomView];
-    [self getPhoneNumber];
+    
+    if (self.carrierType == 1) {
+        [self.activityIndicator startAnimating];
+        [self.quickLoginButton setUserInteractionEnabled:NO];
+        [self.quickLoginButton setAlpha:0.7];
+    }
 }
 
 - (void)__initThemeLabel
@@ -127,8 +135,6 @@
         [_quickLoginButton setTitle:title forState:UIControlStateHighlighted];
         [_quickLoginButton setTitleColor:UIColorFromHex(0xffffff) forState:UIControlStateNormal];
         [_quickLoginButton setTitleColor:UIColorFromHex(0xffffff) forState:UIControlStateHighlighted];
-        [_quickLoginButton setUserInteractionEnabled:NO];
-        [_quickLoginButton setAlpha:0.7];
         _quickLoginButton.titleLabel.font = [UIFont systemFontOfSize:15.0f*KHeightScale];
         _quickLoginButton.layer.cornerRadius = 44.0*KHeightScale/2;
         _quickLoginButton.layer.masksToBounds = YES;
@@ -174,9 +180,8 @@
         }];
         
         UIButton *agreeButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        NSInteger carrierType = [[NTESQuickLoginManager sharedInstance] getCarrier];
         NSString *agreeTitle = CMService;
-        switch (carrierType) {
+        switch (self.carrierType) {
             case 1:
                 agreeTitle = CTService;
                 break;
@@ -205,24 +210,25 @@
 
 - (void)getPhoneNumber
 {
-    [self.activityIndicator startAnimating];
-    [self.quickLoginButton setUserInteractionEnabled:NO];
-    [self.quickLoginButton setAlpha:0.7];
-    [[NTESQuickLoginManager sharedInstance] getPhoneNumberCompletion:^(NSDictionary * _Nonnull resultDic) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.activityIndicator stopAnimating];
-            NSNumber *boolNum = [resultDic objectForKey:@"success"];
-            BOOL success = [boolNum boolValue];
-            if (success) {
-                self.phoneLabel.text = [resultDic objectForKey:@"securityPhone"];
-                [self.quickLoginButton setUserInteractionEnabled:YES];
-                [self.quickLoginButton setAlpha:1.0];
-            } else {
-                [self showToastWithMsg:[NSString stringWithFormat:@"code:%@\ndesc:%@",  [resultDic objectForKey:@"resultCode"], [resultDic objectForKey:@"desc"]]];
-                [self updateView];
-            }
-        });
-    }];
+    if (self.carrierType == 1) {
+        [[NTESQuickLoginManager sharedInstance] getPhoneNumberCompletion:^(NSDictionary * _Nonnull resultDic) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.activityIndicator stopAnimating];
+                NSNumber *boolNum = [resultDic objectForKey:@"success"];
+                BOOL success = [boolNum boolValue];
+                if (success) {
+                    self.phoneLabel.text = [resultDic objectForKey:@"securityPhone"];
+                    [self.quickLoginButton setUserInteractionEnabled:YES];
+                    [self.quickLoginButton setAlpha:1.0];
+                } else {
+#ifdef TEST_MODE_QA
+                    [self showToastWithMsg:[NSString stringWithFormat:@"code:%@\ndesc:%@",  [resultDic objectForKey:@"resultCode"], [resultDic objectForKey:@"desc"]]];
+#endif
+                    [self updateView];
+                }
+            });
+        }];
+    }
 }
 
 - (void)authorizeLoginButtonClick
@@ -433,8 +439,7 @@
 - (void)showService
 {
     NTESQLServiceViewController *vc = [[NTESQLServiceViewController alloc] init];
-    NSInteger carrierType = [[NTESQuickLoginManager sharedInstance] getCarrier];
-    switch (carrierType) {
+    switch (self.carrierType) {
         case 1:
             vc.serviceHTML = CTServiceHTML;
             break;
@@ -476,19 +481,19 @@
     [self.view addSubview:self.phoneTextField];
     [self.phoneTextField mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.themeLabel);
-        make.right.equalTo(self.view).offset(-114*KWidthScale);
+        make.right.equalTo(self.view).offset(-154*KWidthScale);
         make.top.equalTo(self.themeLabel.mas_bottom).offset(39.5*KHeightScale);
     }];
     
     self.timeButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.view addSubview:self.timeButton];
     self.timeButton.titleLabel.font = [UIFont systemFontOfSize:15.0*KHeightScale];
-    [self.timeButton setTitle:@"获取验证码" forState:UIControlStateNormal];
+    [self.timeButton setTitle:@"发送验证码" forState:UIControlStateNormal];
     [self.timeButton setTitleColor:UIColorFromHex(0x0062ff) forState:UIControlStateNormal];
     [self.timeButton addTarget:self action:@selector(sendMessage) forControlEvents:UIControlEventTouchUpInside];
     [self.timeButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(self.phoneTextField);
-        make.width.equalTo(@(80*KWidthScale));
+        make.width.equalTo(@(120*KWidthScale));
         make.height.equalTo(@(21*KHeightScale));
         make.right.equalTo(self.view).offset(-34*KWidthScale);
     }];

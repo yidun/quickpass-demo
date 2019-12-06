@@ -26,8 +26,6 @@
 
 @property (nonatomic, strong) UIButton *nextButton;
 
-@property (nonatomic, strong) UILabel *phoneLable;
-
 @property (nonatomic, strong) UIButton *timeButton;
 
 @property (nonatomic, strong) UITextField *verifyCodeTextField;
@@ -35,8 +33,6 @@
 @property (nonatomic, strong) NTESQuickPassManager *manager;
 
 @property (nonatomic, strong) NSDictionary *params;
-
-@property (nonatomic, copy) NSString *phoneNumber;
 
 @end
 
@@ -70,7 +66,6 @@
 {
     // test
 //    self.phoneNumberTextField.text = @"15356683517";
-    self.phoneNumber = self.phoneNumberTextField.text;
     if (!self.phoneNumberTextField.text.length) {
         [self showToastWithMsg:@"手机号不可为空"];
         return;
@@ -78,7 +73,7 @@
     [NTESQPVerifyingPopView showVerifyingFromView:self.view title:verifyingQPText];
     WeakSelf(self);
     self.manager.timeOut = 10.0 * 1000;
-    [self.manager verifyPhoneNumber:self.phoneNumber businessID:QP_BUSINESSID completion:^(NSDictionary * _Nullable params, NTESQPStatus status, BOOL success) {
+    [self.manager verifyPhoneNumber:self.phoneNumberTextField.text businessID:QP_BUSINESSID completion:^(NSDictionary * _Nullable params, NTESQPStatus status, BOOL success) {
         StrongSelf(weakSelf);
         dispatch_async(dispatch_get_main_queue(), ^{
             if (status == NTESQPAccessTokenSuccess) {
@@ -92,21 +87,30 @@
             }
             if (status == NTESQPNonGateway) {
                 [NTESQPVerifyingPopView hideVerifyingView];
-                [strongSelf showToastWithMsg:@"请确保网络已连接"];
+                [strongSelf showToastWithMsg:@"请确保蜂窝网络连接"];
                 return;
             }
             if (status == NTESQPAccessTokenTimeout) {
                 [NTESQPVerifyingPopView hideVerifyingView];
                 [strongSelf showToastWithMsg:@"请求超时"];
+                [strongSelf showSendMessageView];
                 return;
             }
             if (status == NTESQPAccessTokenFailure) {
                 [NTESQPVerifyingPopView hideVerifyingView];
                 [strongSelf showToastWithMsg:@"请求失败"];
+                [strongSelf showSendMessageView];
                 return;
             }
         });
     }];
+}
+
+- (void)showSendMessageView
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self updateView];
+    });
 }
 
 - (void)startCheck
@@ -114,7 +118,7 @@
     NSDictionary *dict = @{
                            @"accessToken":[self.params objectForKey:@"accessToken"]?:@"",
                            @"token":[self.params objectForKey:@"token"]?:@"",
-                           @"phone":self.phoneNumber,
+                           @"phone":self.phoneNumberTextField.text,
                            };
     NSError *error;
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dict
@@ -133,6 +137,7 @@
                 [self parseCheckObject:data];
             } else {
                 [self showToastWithMsg:[NSString stringWithFormat:@"服务器错误-%ld", (long)statusCode]];
+                [self showSendMessageView];
             }
         });
     }];
@@ -141,7 +146,7 @@
 - (void)verifySMSCode
 {
     NSDictionary *dict = @{
-                           @"phone":self.phoneNumber,
+                           @"phone":self.phoneNumberTextField.text,
                            @"code":self.verifyCodeTextField.text,
                            };
     NSError *error;
@@ -185,14 +190,15 @@
             if ([code integerValue] == 200) {
                 [self verifySuccess];
             } else if ([code integerValue] == 1000){
-                [self updateView];
-                [self startTime:self.timeButton];
+                [self showSendMessageView];
             } else {
                 [self showToastWithMsg:[NSString stringWithFormat:@"错误：%@", code]];
+                [self showSendMessageView];
             }
         }
     } else {
         [self showToastWithMsg:@"返回数据格式错误"];
+        [self showSendMessageView];
     }
 }
 
@@ -256,7 +262,7 @@
 
 - (void)sendMessage
 {
-    NSString *urlString = [NSString stringWithFormat:@"%@?phone=%@", API_LOGIN_SMS_SEND, self.phoneNumber];
+    NSString *urlString = [NSString stringWithFormat:@"%@?phone=%@", API_LOGIN_SMS_SEND, self.phoneNumberTextField.text];
     [NTESDemoHttpRequest startRequestWithURL:urlString httpMethod:@"GET" requestData:nil finishBlock:^(NSData *data, NSError *error, NSInteger statusCode) {
         dispatch_async(dispatch_get_main_queue(), ^{
             if (data) {
@@ -342,26 +348,24 @@
 
 - (void)updateView
 {
-    [self.phoneNumberTextField removeFromSuperview];
-    
+    [self.phoneNumberTextField mas_updateConstraints:^(MASConstraintMaker *make) {
+       make.left.equalTo(self.themeLabel);
+       make.right.equalTo(self.view).offset(-154*KWidthScale);
+       make.top.equalTo(self.themeLabel.mas_bottom).offset(41*KHeightScale);
+    }];
+
     self.timeButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.view addSubview:self.timeButton];
     self.timeButton.titleLabel.font = [UIFont systemFontOfSize:15.0*KHeightScale];
+    [self.timeButton setTitle:@"发送验证码" forState:UIControlStateNormal];
+    [self.timeButton setTitleColor:UIColorFromHex(0x0062ff) forState:UIControlStateNormal];
     [self.timeButton addTarget:self action:@selector(sendMessage) forControlEvents:UIControlEventTouchUpInside];
+    self.timeButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
     [self.timeButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.themeLabel.mas_bottom).offset(39.5*KHeightScale);
-        make.width.equalTo(@(68*KWidthScale));
+        make.centerY.equalTo(self.phoneNumberTextField);
+        make.width.equalTo(@(120*KWidthScale));
         make.height.equalTo(@(21*KHeightScale));
         make.right.equalTo(self.view).offset(-34*KWidthScale);
-    }];
-    
-    self.phoneLable = [[UILabel alloc] init];
-    self.phoneLable.text = self.phoneNumberTextField.text;
-    self.phoneLable.font = [UIFont systemFontOfSize:15.0*KHeightScale];
-    [self.view addSubview:self.phoneLable];
-    [self.phoneLable mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.themeLabel);
-        make.centerY.equalTo(self.timeButton);
     }];
     
     self.firstSeparateLine = [[UIView alloc] init];
@@ -370,7 +374,7 @@
     [self.firstSeparateLine mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.themeLabel);
         make.right.equalTo(self.view).offset(-34*KWidthScale);
-        make.top.equalTo(self.phoneLable.mas_bottom).offset(11.5*KHeightScale);
+        make.top.equalTo(self.phoneNumberTextField.mas_bottom).offset(11.5*KHeightScale);
         make.height.equalTo(@0.5);
     }];
     

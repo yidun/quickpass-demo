@@ -91,6 +91,7 @@
     if ([[NTESQuickLoginManager sharedInstance] getCarrier] == 1) {
         // 电信
         [self.navigationController pushViewController:self.loginViewController animated:YES];
+        [self.loginViewController getPhoneNumber];
     } else if ([[NTESQuickLoginManager sharedInstance] getCarrier] == 2) {
         // 移动
         [[NTESQuickLoginManager sharedInstance] getPhoneNumberCompletion:^(NSDictionary * _Nonnull resultDic) {
@@ -228,6 +229,7 @@
     CUModel.destroyCrollerBySelf = NO;
     CUModel.backgroundColor =[UIColor whiteColor];
     CUModel.isAutoRelease = YES;
+    CUModel.ifStopListeningAuthPageClosed = YES;
     
     CUModel.navBottomLineHidden = YES;
     CUModel.navBarHidden = NO;
@@ -277,7 +279,11 @@
     CUModel.checkBoxNormalImg = [UIImage imageNamed:@"checkBox"];
     CUModel.checkBoxCheckedImg = [UIImage imageNamed:@"checkedBox"];
     CUModel.loadingText= @"请稍后";
-    
+    CUModel.privacyTextAlignment = NSTextAlignmentCenter;
+    CUModel.stringAfterPrivacy = @"\n";
+    CUModel.stringBeforeDefaultPrivacyText = @" ";
+    CUModel.stringBeforeAppFPrivacyText = @"、";
+    CUModel.stringBeforeAppSPrivacyText = @"、";
     
     CUModel.topCustomView = ^(UIView *topCustomView) {
         UILabel *label = [[UILabel alloc]init];
@@ -373,7 +379,8 @@
 
 - (void)clickRightBtn
 {
-    NSLog(@"点击了右键");
+    [self dismissViewControllerAnimated:YES completion:nil];
+    NSLog(@"点击了右键，自行关闭授权页面可以使用dismissViewControllerAnimated方法");
 }
 
 - (void)clickCustomBtn

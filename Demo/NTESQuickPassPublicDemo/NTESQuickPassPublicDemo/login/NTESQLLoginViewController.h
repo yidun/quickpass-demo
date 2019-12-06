@@ -19,4 +19,6 @@
 
 - (void)showToastWithMsg:(NSString *)msg;
 
+- (void)getPhoneNumber;
+
 @end
