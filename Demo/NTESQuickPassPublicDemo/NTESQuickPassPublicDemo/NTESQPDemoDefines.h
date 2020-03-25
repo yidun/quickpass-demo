@@ -76,4 +76,6 @@
 #define CMService                   @"《中国移动认证服务条款》"
 #define CTService                   @"《中国电信认证服务条款》"
 
+#import <Masonry/Masonry.h>
+
 #endif /* NTESQPDefines_h */
