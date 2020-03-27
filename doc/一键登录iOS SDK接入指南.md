@@ -67,7 +67,7 @@
 	    }];
 	    
 * 6、授权认证接口
-	* 电信：登录界面（取号接口）使用运营商提供的授权页面，调用方式如下：
+	* 电信：登录界面（取号接口）调用该接口弹出电信运营商提供的授权页面 ，调用方式如下：
     
 			[[NTESQuickLoginManager sharedInstance] CTAuthorizeLoginCompletion:^(NSDictionary * _Nonnull resultDic) {
 				NSNumber *boolNum = [resultDic objectForKey:@"success"];
@@ -78,7 +78,7 @@
 					// 取号失败
 		        }
 		    }];   
-	* 移动、联通:登录界面（取号接口）使用运营商提供的授权页面，调用方式如下：
+	* 移动、联通:登录界面（取号接口）调用该接口弹出移动、联通运营商提供的授权页面，调用方式如下：
 			
 			 [[NTESQuickLoginManager sharedInstance] CUCMAuthorizeLoginCompletion:^(NSDictionary * _Nonnull resultDic) {
 		        NSNumber *boolNum = [resultDic objectForKey:@"success"];
@@ -92,10 +92,28 @@
 * 7、移动、联通、电信授权页面自定义接口，调用方式如下：
 
 			NTESQuickLoginCustomModel *model = [[NTESQuickLoginCustomModel alloc] init];
-	 		model.currentVC = self;
+            
+              /**当前VC,注意:要用一键登录这个值必传*/
+	 		model.currentVC = self; 
              
-	 		/* 在此处进行自定义，可自定义项参见NTESQuickLoginCustomModel.h */
-			[[NTESQuickLoginManager sharedInstance] setupModel:model];
+             /// customView为控制器上的view,可在控制器上自定义控件
+              model.customViewBlock = ^(UIView * _Nullable customView) {
+                 UIView *bottom = [[UIView alloc] initWithFrame:CGRectMake(0, 300, self.view.bounds.size.width, 100)];
+                 bottom.backgroundColor = [UIColor redColor];
+                 [customView addSubview:bottom];
+             };
+             
+             /// customNavView导航栏的view,可在导航栏上自定义控件
+              model.customNavBlock = ^(UIView * _Nullable customNavView) {
+                 UIView *bottom = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 30)];
+                 bottom.backgroundColor = [UIColor redColor];
+                 [customNavView addSubview:bottom];
+             };
+             
+             了解更多的属性，可进入头文件查看
+             
+             /* 在此处进行自定义，可自定义项参见NTESQuickLoginCustomModel.h */
+             [[NTESQuickLoginManager sharedInstance] setupModel:model];
  __备注:__  在获取accessToken成功的回调里，结合第4步获取的token字段，做下一步check接口的验证；在获取accessToken失败的回调里做客户端的下一步处理，如短信验证。    
 
 

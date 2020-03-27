@@ -249,7 +249,19 @@
 - (void)setCustomUI {
     NTESQuickLoginCustomModel *model = [NTESQLHomePageCustomUIModel configCustomUIModel];
     model.currentVC = self;
+    
+//    model.customViewBlock = ^(UIView * _Nullable customView) {
+//        UIView *bottom = [[UIView alloc] initWithFrame:CGRectMake(0, 300, self.view.bounds.size.width, 100)];
+//        bottom.backgroundColor = [UIColor redColor];
+//        [customView addSubview:bottom];
+//    };
+//    model.customNavBlock = ^(UIView * _Nullable customNavView) {
+//        UIView *bottom = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 30)];
+//        bottom.backgroundColor = [UIColor redColor];
+//        [customNavView addSubview:bottom];
+//    };
     [[NTESQuickLoginManager sharedInstance] setupModel:model];
+    
 }
 
 - (void)clickRightBtn {

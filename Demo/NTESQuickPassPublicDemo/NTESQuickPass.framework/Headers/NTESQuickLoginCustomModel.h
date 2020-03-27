@@ -7,6 +7,9 @@
 
 #import <UIKit/UIKit.h>
 
+typedef void(^AuthCustomViewBlock)(UIView * _Nullable customView);
+typedef void(^AuthCustomNavBlock)(UIView * _Nullable customNavView);
+
 /// 复选框相对隐私条款的位置
 typedef NS_ENUM(NSInteger, NSCheckBoxAlignment) {
     NSCheckBoxAlignmentTop      = 0,    // top aligned
@@ -30,7 +33,6 @@ typedef NS_ENUM(NSUInteger, NTESAuthWindowPop){
 /**
 *  授权页面自定义
 */
-
 NS_ASSUME_NONNULL_BEGIN
 
 @interface NTESQuickLoginCustomModel : NSObject
@@ -38,13 +40,16 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark VC必传属性
 
 /**当前VC,注意:要用一键登录这个值必传*/
-@property (nonatomic,weak) UIViewController *currentVC;
+@property (nonatomic, weak) UIViewController *currentVC;
+
+/**授权界面自定义控件View的Block*/
+@property (nonatomic, copy) AuthCustomViewBlock customViewBlock;
 
 /** 授权页面推出的动画效果*/
 @property (nonatomic, assign) NTESPresentDirection presentDirectionType;
 
 /**授权页背景颜色*/
-@property (nonatomic,strong) UIColor *backgroundColor;
+@property (nonatomic, strong) UIColor *backgroundColor;
 
 /**背景图片*/
 @property (nonatomic,strong) UIImage *bgImage;
@@ -64,6 +69,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) UIStatusBarStyle otherStatusBarStyle;
 
 #pragma mark - 导航栏设置
+
+/**导航栏上自定义控件的Block, 可在导航栏上自由的添加自己想要的控件*/
+@property (nonatomic, copy) AuthCustomNavBlock customNavBlock;
 
 /**导航栏隐藏*/
 @property (nonatomic, assign) BOOL navBarHidden;
@@ -113,7 +121,6 @@ NS_ASSUME_NONNULL_BEGIN
 /**可根据navControlHeight值调整导航栏右边按钮的高度，默认44 */
 @property (nonatomic, assign) CGFloat navControlHeight;
 
-
 #pragma mark - 图片设置
 
 /**LOGO图片*/
@@ -125,8 +132,8 @@ NS_ASSUME_NONNULL_BEGIN
 /**LOGO图片高度*/
 @property (nonatomic, assign) CGFloat logoHeight;
 
-/**LOGO图片上下偏移量 默认距离父控件顶部20，正数 20+logoOffsetY 向下移动，负数 20 +logoOffsetY 向上移动 */
-@property (nonatomic, assign) CGFloat logoOffsetY;
+/**LOGO图片Y偏移量， logoOffsetTopY为距离屏幕顶部的距离 ，默认为20 */
+@property (nonatomic, assign) CGFloat logoOffsetTopY;
 
 /**LOGO图片左右偏移量 ，logoOffsetX = 0居中显示*/
 @property (nonatomic, assign) CGFloat logoOffsetX;
@@ -139,8 +146,8 @@ NS_ASSUME_NONNULL_BEGIN
 /**手机号码字体颜色*/
 @property (nonatomic, strong) UIColor *numberColor;
 
-/**手机号码Y偏移量, 默认距离LOGO底部为10 + numberOffsetY*/
-@property (nonatomic, assign) CGFloat numberOffsetY;
+/**手机号码Y偏移量,  numberOffsetTopY为距离屏幕顶部的距离 ，默认为100*/
+@property (nonatomic, assign) CGFloat numberOffsetTopY;
 
 /**手机号码X偏移量， numberOffsetX = 0 居中显示*/
 @property (nonatomic, assign) CGFloat numberOffsetX;
@@ -177,8 +184,8 @@ NS_ASSUME_NONNULL_BEGIN
 /**认证服务品牌文字字体 默认12*/
 @property (nonatomic, strong) UIFont *brandFont;
 
-/**认证服务品牌Y偏移量, 默认距离手机号码底部为2 + brandOffsetY*/
-@property (nonatomic, assign) CGFloat brandOffsetY;
+/**认证服务品牌Y偏移量, brandOffsetTopY为距离屏幕顶部的距离 ，默认为150*/
+@property (nonatomic, assign) CGFloat brandOffsetTopY;
 
 /**认证服务品牌X偏移量 ，brandOffsetX = 0居中显示*/
 @property (nonatomic, assign) CGFloat brandOffsetX;
@@ -197,7 +204,6 @@ NS_ASSUME_NONNULL_BEGIN
 /*认证服务品牌的高度， 默认为10**/
 @property (nonatomic, assign) CGFloat brandLogoHeight;
 
-
  #pragma mark - 登录按钮设置
 
  /**登录按钮文本*/
@@ -209,8 +215,8 @@ NS_ASSUME_NONNULL_BEGIN
  /**登录按钮文本颜色*/
  @property (nonatomic, strong) UIColor *logBtnTextColor;
 
- /**登录按钮Y偏移量 ，默认距离品牌底部30 ，距离值 = 30+logBtnOffsetY，logBtnOffsetY为负值向上移动 ，反之向下移动*/
- @property (nonatomic, assign) CGFloat logBtnOffsetY;
+ /**登录按钮Y偏移量 ，logBtnOffsetTopY为距离屏幕顶部的距离 ，默认为200*/
+ @property (nonatomic, assign) CGFloat logBtnOffsetTopY;
 
  /**登录按钮圆角，默认8*/
  @property (nonatomic, assign) CGFloat logBtnRadius;
@@ -232,49 +238,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**登录按钮的高度，默认44*/
 @property (nonatomic, assign) CGFloat logBtnHeight;
-
-#pragma mark - 其他登录方式设置
-
-/**其他登录方式字体颜色*/
-@property (nonatomic, strong) UIColor *swithAccTextColor;
-
-/**其他登录方式字体*/
-@property (nonatomic, strong) UIFont *swithAccTextFont;
-
-/**其他登录方式Y偏移量  默认距离登录按钮底部为10 + swithAccOffsetY*/
-@property (nonatomic, assign) CGFloat swithAccOffsetY;
-
-/**其他登录方式X偏移量, swithAccOffsetX = 0居中显示*/
-@property (nonatomic, assign) CGFloat swithAccOffsetX;
-
-/**隐藏其他登录方式按钮（默认显示）*/
-@property (nonatomic, assign) BOOL swithAccHidden;
-
-/**其他登录方式按钮文本*/
-@property(nonatomic, copy) NSString *switchText;
-
-/**其他登录方式的高度，默认为16*/
-@property(nonatomic, assign) CGFloat switchAccHeight;
-
-#pragma mark - 其他登录方式下面的按钮数组的设置
-
-/**其他登录方式：数组（按顺序进行跳转处理)*/
-@property(nonatomic, copy) NSArray<UIButton *> * switchAccArray;
-
-/**其他登录方式按钮的宽度)*/
-@property(nonatomic, assign) CGFloat swithAccButtonWidth;
-
-/**其他登录方式按钮的高度)*/
-@property(nonatomic, assign) CGFloat swithAccButtonHeight;
-
-/**其他登录方式按钮之间的间距)*/
-@property(nonatomic, assign) CGFloat swithAccButtonMargin;
-
-/**其他登录方式按钮Y偏移量*/
-@property (nonatomic, assign) CGFloat swithAccButtonOffsetY;
-
-/**其他登录方式按钮X偏移量 swithAccButtonOffsetX =0 居中显示*/
-@property (nonatomic, assign) CGFloat swithAccButtonOffsetX;
 
 #pragma mark - 隐私条款
 
@@ -405,3 +368,4 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 NS_ASSUME_NONNULL_END
+

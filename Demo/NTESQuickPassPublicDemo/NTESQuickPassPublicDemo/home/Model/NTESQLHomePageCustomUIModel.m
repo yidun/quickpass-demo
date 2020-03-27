@@ -13,14 +13,11 @@
 + (NTESQuickLoginCustomModel *)configCustomUIModel {
     
     NTESQuickLoginCustomModel *model = [[NTESQuickLoginCustomModel alloc] init];
-//    model.currentVC = self;
     model.presentDirectionType = NTESPresentDirectionPush;
     model.backgroundColor = [UIColor whiteColor];
- //    model.bgImage = [UIImage imageNamed:@"bg1"];
     model.authWindowPop = NTESAuthWindowPopFullScreen;
     model.closePopImg = [UIImage imageNamed:@"checkedBox"];
     model.faceOrientation = UIInterfaceOrientationPortrait;
-//    model.loginDidDisapperfaceOrientation = UIInterfaceOrientationPortrait;
     model.navBarHidden = NO;
     model.navTextFont = [UIFont systemFontOfSize:18];
     model.navTextColor = [UIColor redColor];
@@ -30,24 +27,19 @@
     model.navTextHidden = NO;
     model.navReturnImg = [UIImage imageNamed:@"back-1"];
 
-    UIButton *navControl = [[UIButton alloc] init];
-    [navControl setTitle:@"右键" forState:UIControlStateNormal];
-//    [navControl addTarget:self action:@selector(clickRightBtn) forControlEvents:UIControlEventTouchUpInside];
-    model.navControl = navControl;
-
    /// logo
     model.logoImg = [UIImage imageNamed:@"logo1"];
     model.logoWidth = 50;
     model.logoHeight = 100;
     model.logoOffsetX = 0;
-    model.logoOffsetY = 0;
+    model.logoOffsetX = 0;
     model.logoHidden = NO;
 
    /// 手机号码
     model.numberColor = [UIColor blackColor];
     model.numberFont = [UIFont systemFontOfSize:12];
     model.numberOffsetX = 0;
-    model.numberOffsetY = 0;
+    model.numberOffsetTopY = 0;
     model.numberHeight = 27;
 
    ///  品牌
@@ -57,17 +49,11 @@
     model.brandHeight = 20;
     model.brandOffsetX = 0;
     model.brandOffsetX = 0;
-//    model.brandHidden = YES;
-
-//    model.logBtnText = @"登录啦";
     model.logBtnTextFont = [UIFont systemFontOfSize:14];
     model.logBtnTextColor = [UIColor redColor];
-    model.logBtnOffsetY = -15;
     model.logBtnRadius = 12;
     model.logBtnText = @"本机登录";
     model.logBtnUsableBGColor = [UIColor blueColor];
-//    model.logBtnOriginLeft = 60;
-//    model.logBtnOriginRight = 60;
     model.logBtnHeight = 44;
     model.logBtnEnableImg = [UIImage imageNamed:@"login_able"];
     model.logBtnDisableImg = [UIImage imageNamed:@"login_disable"];
@@ -81,15 +67,6 @@
     UIButton *qqButton = [[UIButton alloc] init];
     [qqButton setBackgroundImage:[UIImage imageNamed:@"checkedBox"] forState:UIControlStateNormal];
     qqButton.backgroundColor = [UIColor redColor];
-
-    NSArray *switchAccArray = @[wechatButton, paypalButton, qqButton];
-    model.switchAccArray = switchAccArray;
-    model.swithAccButtonWidth = 40;
-    model.swithAccButtonHeight = 40;
-    model.swithAccButtonMargin = 20;
-    model.swithAccButtonOffsetX = 0;
-//    model.swithAccTextColor = [uic]
-    model.swithAccButtonOffsetY = 20;
 
     model.appPrivacyText = @"登录即同意《默认》和《用户隐私协议》";
     model.appFPrivacyText = @"《用户隐私协议》";
