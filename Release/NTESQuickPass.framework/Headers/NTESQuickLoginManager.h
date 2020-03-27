@@ -6,8 +6,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "NTESQuickLoginCMModel.h"
-#import "NTESQuickLoginCUModel.h"
+#import "NTESQuickLoginCustomModel.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -41,6 +40,13 @@ typedef void(^NTESQLAuthorizeHandler)(NSDictionary *resultDic);
  *  @说明        设置运营商预取号和授权登录接口的超时时间，单位ms，默认为3000ms
  */
 @property (nonatomic, assign) NSTimeInterval timeoutInterval;
+
+/**
+*  @abstract   属性
+*
+*  @说明  授权登录界面model
+*/
+@property (nonatomic, strong) NTESQuickLoginCustomModel *model;
 
 /**
  *  @abstract   单例
@@ -97,18 +103,12 @@ typedef void(^NTESQLAuthorizeHandler)(NSDictionary *resultDic);
 - (void)CTAuthorizeLoginCompletion:(NTESQLAuthorizeHandler)authorizeHandler;
 
 /**
- *  @abstract   设置移动授权登录界面model，⚠️注意：必须调用，此方法需嵌套在getPhoneNumberCompletion的回调中使用，且在authorizeLoginViewController:result:之前调用
- *
- *  @param      model   移动登录界面model，必传
- */
-- (void)setupCMModel:(NTESQuickLoginCMModel *)model;
-
-/**
- *  @abstract   设置联通授权登录界面model，⚠️注意：必须调用，此方法需嵌套在getPhoneNumberCompletion的回调中使用，且在authorizeLoginViewController:result:之前调用
- *
- *  @param      model   联通登录界面model，必传
- */
-- (void)setupCUModel:(NTESQuickLoginCUModel *)model;
+*  @abstract
+ 设置授权登录界面model，⚠️注意：必须调用，此方法需嵌套在getPhoneNumberCompletion的回调中使用，且在CUCMAuthorizeLoginCompletion:之前调用
+*
+*  @param      model   登录界面model，必传
+*/
+- (void)setupModel:(NTESQuickLoginCustomModel *)model;
 
 /**
  *  @abstract   联通、移动 - 授权登录（取号接口），⚠️注意：此方法需嵌套在getPhoneNumberCompletion的回调中使用，且在setupCMModel:或setupCUModel:之后调用
@@ -127,3 +127,6 @@ typedef void(^NTESQLAuthorizeHandler)(NSDictionary *resultDic);
 @end
 
 NS_ASSUME_NONNULL_END
+
+
+
