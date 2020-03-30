@@ -51,13 +51,13 @@
     }];
 }
 
-/// 使用易盾提供的businessID进行初始化业务，回调中返回初始化结果
+/// 使用易盾提供的businessID进行初始化业务，回调中返回初始化结果 ⚠️BusinessID ,请填写易盾分配的业务方ID
 - (void)registerQuickLogin {
     // 在使用一键登录之前，请先调用shouldQuickLogin方法，判断当前上网卡的网络环境和运营商是否可以一键登录
     self.shouldQL = [[NTESQuickLoginManager sharedInstance] shouldQuickLogin];
     
     if (self.shouldQL) {
-        [[NTESQuickLoginManager sharedInstance] registerWithBusinessID:QL_BUSINESSID timeout:3*1000 configURL:nil extData:nil completion:^(NSDictionary * _Nullable params, BOOL success) {
+        [[NTESQuickLoginManager sharedInstance] registerWithBusinessID:@"易盾分配的业务方ID" timeout:3*1000 configURL:nil extData:nil completion:^(NSDictionary * _Nullable params, BOOL success) {
             if (success) {
                 self.token = [params objectForKey:@"token"];
                 self.precheckSuccess = YES;
